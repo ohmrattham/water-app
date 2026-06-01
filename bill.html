@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ออกบิลค่าน้ำ</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+    font-family:'Kanit',sans-serif;
+    background:#f8fafc;
+    margin:0;
+}
+
+.header{
+    background:linear-gradient(135deg,#1e3a8a,#3b82f6);
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:15px;
+}
+
+/* control */
+.box{
+    background:white;
+    padding:15px;
+    border-radius:16px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.05);
+    margin-top:15px;
+}
+
+select,button{
+    padding:10px;
+    border-radius:10px;
+    font-family:Kanit;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+/* bill preview */
+.bill-container{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:20px;
+}
+
+.bill{
+    background:white;
+    padding:15px;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+}
+
+.bill h3{
+    margin:0;
+    text-align:center;
+    border-bottom:1px solid #eee;
+    padding-bottom:5px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    margin:5px 0;
+    font-size:14px;
+}
+
+.total{
+    font-size:18px;
+    font-weight:600;
+    color:#1e40af;
+    text-align:right;
+}
+
+/* print */
+@media print{
+    button,select,.box{display:none;}
+    body{background:white;}
+    .bill-container{
+        grid-template-columns:1fr 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>🧾 ออกบิลค่าน้ำ</h2>
+</div>
+
+<div class="container">
+
+<!-- control -->
+<div class="box">
+    <div>เลือกบ้าน</div>
+    <select id="house"></select>
+
+    <div style="margin-top:10px;">เลือกเดือน</div>
+    <select id="month">
+        <option value="1">ม.ค.</option><option value="2">ก.พ.</option>
+        <option value="3">มี.ค.</option><option value="4">เม.ย.</option>
+        <option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
+        <option value="7">ก.ค.</option><option value="8">ส.ค.</option>
+        <option value="9">ก.ย.</option><option value="10">ต.ค.</option>
+        <option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
+    </select>
+
+    <button onclick="loadBill()">📄 สร้างบิล</button>
+    <button onclick="window.print()">🖨️ พิมพ์ / Save PDF</button>
+</div>
+
+<!-- preview -->
+<div id="billArea" class="bill-container"></div>
+
+</div>
+
+<script>
+
+const API = "https://script.google.com/macros/s/AKfycbxzsn3zsiIPvcdDA3bepLpynZ-Od78U_oUZlZCgiN5Mg74xVpuWPoh7nP-cLAhFFGlw4A/exec";
+
+let houses = [];
+
+async function loadHouses(){
+
+    const res = await fetch(API+"?type=houses");
+    houses = await res.json();
+
+    const sel = document.getElementById("house");
+
+    houses.forEach(h=>{
+        sel.innerHTML += `
+            <option value="${h.number}">
+                บ้าน ${h.number} - ${h.name}
+            </option>
+        `;
+    });
+}
+
+async function loadBill(){
+
+    const house = document.getElementById("house").value;
+    const month = document.getElementById("month").value;
+
+    const res = await fetch(API+`?type=history&house=${house}&month=${month}`);
+    const data = await res.json();
+
+    if(!data.length){
+        document.getElementById("billArea").innerHTML =
+        "<div class='box'>ไม่พบข้อมูล</div>";
+        return;
+    }
+
+    let html = "";
+
+    data.forEach(d=>{
+
+        const usage = Number(d.new) - Number(d.old);
+        const price = usage * 8; // 💰 ราคา/หน่วย (แก้ได้)
+
+        html += `
+        <div class="bill">
+
+            <h3>บิลค่าน้ำ</h3>
+
+            <div class="row"><span>บ้าน</span><span>${d.house}</span></div>
+            <div class="row"><span>ชื่อ</span><span>${d.name}</span></div>
+            <div class="row"><span>เดือน</span><span>${d.month}</span></div>
+
+            <div class="row"><span>เลขเก่า</span><span>${d.old}</span></div>
+            <div class="row"><span>เลขใหม่</span><span>${d.new}</span></div>
+
+            <div class="row"><span>ใช้น้ำ</span><span>${usage} หน่วย</span></div>
+
+            <div class="row"><span>ราคา/หน่วย</span><span>8 บาท</span></div>
+
+            <div class="total">รวม ${price} บาท</div>
+
+            <div class="row"><span>วันที่</span><span>${d.date || "-"}</span></div>
+
+        </div>`;
+    });
+
+    document.getElementById("billArea").innerHTML = html;
+}
+
+loadHouses();
+
+</script>
+
+</body>
+</html>

@@ -1,314 +1,403 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>กรอกค่าน้ำ | WaterSys</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        :root {
-            --primary-blue: #1e40af;
-            --secondary-blue: #2563eb;
-            --bg-body: #f8fafc;
-            --success-green: #22c55e;
-            --warning-orange: #f59e0b;
-            --danger-red: #ef4444;
-            --purple: #8b5cf6;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>กรอกค่าน้ำ | WaterSys</title>
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 
-        body {
-            font-family: 'Kanit', sans-serif;
-            background-color: var(--bg-body);
-            color: #1e293b;
-            min-height: 100vh;
-        }
+<style>
+:root {
+    --primary-blue: #1e40af;
+    --secondary-blue: #2563eb;
+    --bg-body: #f8fafc;
+    --success-green: #22c55e;
+    --warning-orange: #f59e0b;
+    --danger-red: #ef4444;
+    --purple: #8b5cf6;
+}
 
-        .header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            color: white;
-            padding: 30px 20px 80px;
-            text-align: center;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
-        }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .container {
-            padding: 0 15px;
-            margin-top: -60px;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            padding-bottom: 40px;
-        }
+body {
+    font-family: 'Kanit', sans-serif;
+    background-color: var(--bg-body);
+    color: #1e293b;
+    min-height: 100vh;
+}
 
-        /* --- DASHBOARD STYLE --- */
-        .summary-card {
-            background: white;
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
+/* HEADER */
+.header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    padding: 30px 20px 80px;
+    text-align: center;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+}
 
-        .summary-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--primary-blue);
-            margin-bottom: 15px;
-            padding-left: 5px;
-        }
+/* FLOAT HOME BUTTON */
+.floating-home {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 999;
+    transition: 0.2s;
+}
 
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
+.floating-home:hover {
+    transform: scale(1.1);
+    background: #f1f5f9;
+}
 
-        .stat-box {
-            background: white;
-            border: 1px solid #f1f5f9;
-            border-radius: 16px;
-            padding: 15px 10px;
-            text-align: center;
-            transition: 0.3s;
-        }
+.container {
+    padding: 0 15px;
+    margin-top: -60px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 40px;
+}
 
-        .stat-label { font-size: 12px; color: #64748b; margin-bottom: 5px; }
-        .stat-value { font-size: 22px; font-weight: 600; line-height: 1; margin-bottom: 5px; }
-        .stat-unit { font-size: 11px; color: #94a3b8; }
+/* DASHBOARD */
+.summary-card {
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
 
-        .stat-all { color: var(--secondary-blue); }
-        .stat-done { color: var(--success-green); }
-        .stat-pending { color: var(--danger-red); }
-        .stat-percent { color: var(--purple); }
+.summary-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-blue);
+    margin-bottom: 15px;
+}
 
-        /* --- TABLE CARD --- */
-        .main-card {
-            background: white;
-            border-radius: 30px;
-            padding: 25px 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
-        }
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
 
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f1f5f9;
-        }
+.stat-box {
+    background: white;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 15px 10px;
+    text-align: center;
+}
 
-        .selectors { display: flex; gap: 8px; }
-        select, .year-input {
-            padding: 8px 12px;
-            border-radius: 12px;
-            border: 1.5px solid #e2e8f0;
-            font-family: 'Kanit', sans-serif;
-            font-size: 14px;
-        }
+.stat-value { font-size: 22px; font-weight: 600; }
+.stat-all { color: var(--secondary-blue); }
+.stat-done { color: var(--success-green); }
+.stat-pending { color: var(--danger-red); }
+.stat-percent { color: var(--purple); }
 
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th { background: #f8fafc; color: #64748b; font-weight: 500; text-align: left; padding: 15px 10px; font-size: 14px; }
-        td { padding: 15px 10px; border-bottom: 1px solid #f1f5f9; font-size: 15px; }
+/* TABLE */
+.main-card {
+    background: white;
+    border-radius: 30px;
+    padding: 25px 20px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+}
 
-        .meter-input {
-            width: 80px; padding: 8px; border-radius: 10px;
-            border: 1.5px solid #e2e8f0; text-align: center; font-family: 'Kanit', sans-serif;
-        }
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f1f5f9;
+}
 
-        .btn {
-            padding: 8px 15px; border: none; border-radius: 10px;
-            color: white; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .btn-save { background: var(--secondary-blue); }
-        .btn-done { background: var(--success-green); cursor: default; }
-        .btn-loading { background: var(--warning-orange); cursor: wait; }
+.year-input {
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    font-family: 'Kanit', sans-serif;
+}
 
-        .status-pill { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 500; }
-        .p-wait { background: #fff7ed; color: #9a3412; }
-        .p-done { background: #f0fdf4; color: #166534; }
+.table-wrapper { overflow-x: auto; }
 
-        @media(max-width: 600px) {
-            .summary-grid { grid-template-columns: repeat(2, 1fr); }
-            .stat-value { font-size: 20px; }
-            .main-card { padding: 15px; }
-        }
-    </style>
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+}
+
+th {
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 500;
+    text-align: left;
+    padding: 15px 10px;
+}
+
+td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.meter-input {
+    width: 80px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    text-align: center;
+}
+
+.btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-save { background: var(--secondary-blue); }
+.btn-done { background: var(--success-green); }
+.btn-loading { background: var(--warning-orange); cursor: wait; }
+
+.status-pill {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.p-wait { background: #fff7ed; color: #9a3412; }
+.p-done { background: #f0fdf4; color: #166534; }
+
+</style>
 </head>
+
 <body>
 
+<!-- 🔥 FLOATING HOME ICON -->
+<div class="floating-home" onclick="goHome()">
+    <i data-lucide="home"></i>
+</div>
+
 <div class="header">
-    <h2><i data-lucide="clipboard-check" style="margin-right:8px"></i> ระบบบันทึกค่าน้ำ</h2>
+    <h2>📊 ระบบบันทึกค่าน้ำ</h2>
 </div>
 
 <div class="container">
-    <!-- สรุปภาพรวม (Dashboard) -->
-    <div class="summary-card">
-        <div class="summary-title">สรุปภาพรวมเดือนปัจจุบัน</div>
-        <div class="summary-grid">
-            <div class="stat-box">
-                <div class="stat-label">ทั้งหมด</div>
-                <div class="stat-value stat-all" id="total_houses">0</div>
-                <div class="stat-unit">หลัง</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">กรอกแล้ว</div>
-                <div class="stat-value stat-done" id="done_houses">0</div>
-                <div class="stat-unit">หลัง</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">รอกรอก</div>
-                <div class="stat-value stat-pending" id="pending_houses">0</div>
-                <div class="stat-unit">หลัง</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">คิดเป็น</div>
-                <div class="stat-value stat-percent" id="percent_done">0%</div>
-                <div class="stat-unit">ของทั้งหมด</div>
-            </div>
-        </div>
-    </div>
 
-    <!-- ส่วนตารางข้อมูล -->
-    <div class="main-card">
-        <div class="top-bar">
-            <span style="font-weight:600; color:#475569">รายการบ้านพัก</span>
-            <div class="selectors">
-                <select id="month">
-                    <option value="1">ม.ค.</option><option value="2">ก.พ.</option>
-                    <option value="3">มี.ค.</option><option value="4">เม.ย.</option>
-                    <option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
-                    <option value="7">ก.ค.</option><option value="8">ส.ค.</option>
-                    <option value="9">ก.ย.</option><option value="10">ต.ค.</option>
-                    <option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
-                </select>
-                <input type="number" id="year" class="year-input" value="2569" style="width:80px">
-            </div>
+<!-- DASHBOARD -->
+<div class="summary-card">
+    <div class="summary-title">สรุปภาพรวม</div>
+    <div class="summary-grid">
+        <div class="stat-box">
+            <div>ทั้งหมด</div>
+            <div class="stat-value stat-all" id="total_houses">0</div>
         </div>
-
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>บ้าน</th>
-                        <th>ชื่อเจ้าของ</th>
-                        <th>เก่า</th>
-                        <th>ใหม่</th>
-                        <th>บันทึก</th>
-                    </tr>
-                </thead>
-                <tbody id="table"></tbody>
-            </table>
+        <div class="stat-box">
+            <div>กรอกแล้ว</div>
+            <div class="stat-value stat-done" id="done_houses">0</div>
+        </div>
+        <div class="stat-box">
+            <div>รอกรอก</div>
+            <div class="stat-value stat-pending" id="pending_houses">0</div>
+        </div>
+        <div class="stat-box">
+            <div>เปอร์เซ็นต์</div>
+            <div class="stat-value stat-percent" id="percent_done">0%</div>
         </div>
     </div>
 </div>
 
+<!-- TABLE -->
+<div class="main-card">
+
+<div class="top-bar">
+    <span>รายการบ้าน</span>
+
+    <div style="display:flex;gap:10px;align-items:center;">
+
+        <input type="number" id="year" class="year-input" readonly>
+
+        <button onclick="closeMonth()"
+            style="background:#2563eb;color:white;border:none;padding:8px 12px;border-radius:10px;">
+            📊 สรุปเดือน
+        </button>
+
+    </div>
+</div>
+
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>บ้าน</th>
+<th>ชื่อ</th>
+<th>เก่า</th>
+<th>ใหม่</th>
+<th>บันทึก</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+</div>
+
+</div>
+</div>
+
 <script>
-    if(localStorage.getItem("login") !== "true") window.location = "index.html";
 
-    const API = "https://script.google.com/macros/s/AKfycbxnc69DpHYtL3KNTP6Y2DoStQhZ7xhgDNjBNH8p3Lzac-VRBn937XPmQX43JX5KDu67/exec?type=users";
-    let houses = [];
-    let countDone = 0;
+const API = "https://script.google.com/macros/s/AKfycbxzsn3zsiIPvcdDA3bepLpynZ-Od78U_oUZlZCgiN5Mg74xVpuWPoh7nP-cLAhFFGlw4A/exec";
 
-    async function loadHouses(){
-        const tableBody = document.getElementById("table");
-        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px;">กำลังโหลด...</td></tr>`;
-        
-        try{
-            const res = await fetch(API + "?type=houses");
-            const data = await res.json();
-            houses = data.map((h,i)=>({
-                id: i+1, house: h.number, village: h.moo, name: h.name, old: h.lastMeter || 0
-            }));
-            houses.sort((a,b)=> a.house.localeCompare(b.house, undefined, {numeric:true}));
-            
-            updateStats();
-            render();
-        }catch(err){
-            tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">เกิดข้อผิดพลาด</td></tr>`;
-        }
-    }
+const now = new Date();
+const month = now.getMonth() + 1;
+const year = now.getFullYear() + 543;
 
-    function updateStats() {
-        const total = houses.length;
-        const pending = total - countDone;
-        const percent = total > 0 ? Math.round((countDone / total) * 100) : 0;
+document.getElementById("year").value = year;
 
-        document.getElementById("total_houses").innerText = total;
-        document.getElementById("done_houses").innerText = countDone;
-        document.getElementById("pending_houses").innerText = pending;
-        document.getElementById("percent_done").innerText = percent + "%";
-    }
+let houses = [];
+let countDone = 0;
 
-    function render(){
-        let html = "";
-        houses.forEach((h)=>{
-            html += `
-                <tr>
-                    <td><b>${h.house}</b><br><span class="status-pill p-wait" id="status_${h.id}">ม.${h.village}</span></td>
-                    <td>${h.name}</td>
-                    <td style="color:#94a3b8">${h.old}</td>
-                    <td><input type="number" class="meter-input" id="new_${h.id}" placeholder="..."></td>
-                    <td>
-                        <button class="btn btn-save" onclick="save(${h.id}, this)">
-                            <i data-lucide="save" size="16"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-        });
-        document.getElementById("table").innerHTML = html;
-        lucide.createIcons();
-    }
+/* 🔥 กลับหน้าหลัก */
+function goHome() {
+    window.location.href = "index.html";
+}
 
-    function save(id, btn){
-        let h = houses.find(x=>x.id===id);
-        let newMeter = document.getElementById("new_"+id).value;
+async function loadHouses() {
 
-        if(!newMeter || Number(newMeter) < Number(h.old)){
-            alert("ข้อมูลมิเตอร์ไม่ถูกต้อง"); return;
-        }
+    document.getElementById("table").innerHTML =
+    `<tr><td colspan="5" style="text-align:center;">กำลังโหลด...</td></tr>`;
 
-        btn.disabled = true; btn.className = "btn btn-loading";
-        btn.innerHTML = "...";
+    const res = await fetch(API + "?type=houses");
+    const data = await res.json();
 
-        fetch(API,{
-            method:"POST",
-            body:JSON.stringify({
-                action:"save", house:h.house, village:h.village, name:h.name,
-                old:h.old, new:newMeter, month:document.getElementById("month").value,
-                year:document.getElementById("year").value, recorder:localStorage.getItem("name")
-            })
-        })
-        .then(res=>res.text())
-        .then(res=>{
-            if(res === "duplicate"){
-                alert("บันทึกไปแล้ว!");
-                btn.disabled = false; btn.className = "btn btn-save"; btn.innerHTML = `<i data-lucide="save" size="16"></i>`;
-                lucide.createIcons();
-                return;
-            }
-            document.getElementById("status_"+id).innerText = "บันทึกแล้ว";
-            document.getElementById("status_"+id).className = "status-pill p-done";
-            btn.className = "btn btn-done"; btn.innerHTML = `<i data-lucide="check" size="16"></i>`;
-            
-            countDone++;
-            updateStats();
-            localStorage.setItem("count", countDone);
-            lucide.createIcons();
-        })
-        .catch(err=> { alert("บันทึกไม่สำเร็จ"); btn.disabled = false; btn.className = "btn btn-save"; });
-    }
+    houses = data.map((h, i) => ({
+        id: i + 1,
+        house: h.number,
+        village: h.moo,
+        name: h.name,
+        old: h.lastMeter || 0
+    }));
 
-    countDone = Number(localStorage.getItem("count") || 0);
-    loadHouses();
+    render();
+    updateStats();
+}
+
+function render() {
+
+    let html = "";
+
+    houses.forEach(h => {
+
+        html += `
+        <tr>
+            <td><b>${h.house}</b><br>
+                <span class="status-pill p-wait">ม.${h.village}</span>
+            </td>
+
+            <td>${h.name}</td>
+
+            <td id="old_${h.id}">${h.old}</td>
+
+            <td>
+                <input class="meter-input" id="new_${h.id}">
+            </td>
+
+            <td>
+                <button class="btn btn-save" onclick="save(${h.id}, this)">
+                    💾
+                </button>
+            </td>
+        </tr>`;
+    });
+
+    document.getElementById("table").innerHTML = html;
     lucide.createIcons();
+}
+
+function updateStats() {
+
+    document.getElementById("total_houses").innerText = houses.length;
+    document.getElementById("done_houses").innerText = countDone;
+    document.getElementById("pending_houses").innerText = houses.length - countDone;
+
+    let percent = houses.length
+        ? Math.round((countDone / houses.length) * 100)
+        : 0;
+
+    document.getElementById("percent_done").innerText = percent + "%";
+}
+
+function save(id, btn) {
+
+    const h = houses.find(x => x.id === id);
+    const newMeter = document.getElementById("new_" + id).value;
+
+    if (!newMeter || Number(newMeter) < Number(h.old)) {
+        alert("ข้อมูลไม่ถูกต้อง");
+        return;
+    }
+
+    fetch(API, {
+        method: "POST",
+        body: JSON.stringify({
+            house: h.house,
+            moo: h.village,
+            name: h.name,
+            old: h.old,
+            new: newMeter,
+            month: month,
+            year: year
+        })
+    })
+    .then(res => res.text())
+    .then(res => {
+
+        h.old = newMeter;
+        document.getElementById("old_" + id).innerText = newMeter;
+
+        countDone++;
+        updateStats();
+
+        btn.innerText = "✔";
+        btn.className = "btn btn-done";
+    });
+
+}
+
+function closeMonth() {
+
+    if (!confirm("ยืนยันสรุปเดือนนี้?")) return;
+
+    fetch(API, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "closeMonth",
+            month: month,
+            year: year
+        })
+    })
+    .then(res => res.text())
+    .then(res => {
+        alert("สรุปเดือนเรียบร้อย");
+        countDone = 0;
+        updateStats();
+        localStorage.removeItem("count");
+    });
+}
+
+loadHouses();
+
 </script>
 
 </body>
