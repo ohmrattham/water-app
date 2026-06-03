@@ -13,8 +13,8 @@
     --primary-blue: #1e40af;
     --secondary-blue: #2563eb;
     --bg-body: #f8fafc;
-    --success-green: #22c55e;
-    --warning-orange: #f59e0b;
+    --success-green: #16a34a;
+    --warning-orange: #ea580c;
     --danger-red: #ef4444;
     --purple: #8b5cf6;
 }
@@ -64,7 +64,7 @@ body {
 .container {
     padding: 0 15px;
     margin-top: -60px;
-    max-width: 900px;
+    max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
     padding-bottom: 40px;
@@ -106,7 +106,7 @@ body {
 .stat-pending { color: var(--danger-red); }
 .stat-percent { color: var(--purple); }
 
-/* TABLE */
+/* TABLE CARD */
 .main-card {
     background: white;
     border-radius: 30px;
@@ -121,13 +121,55 @@ body {
     margin-bottom: 20px;
     padding-bottom: 15px;
     border-bottom: 1px solid #f1f5f9;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-.year-input {
+/* ช่องเลือกเดือน/ปี ด้านบน */
+.filter-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.select-input {
     padding: 8px 12px;
     border-radius: 12px;
     border: 1.5px solid #e2e8f0;
     font-family: 'Kanit', sans-serif;
+    font-size: 14px;
+    background: white;
+    outline: none;
+}
+
+/* 🔍 SEARCH INPUT STYLE */
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 10px 16px 10px 40px;
+    border-radius: 15px;
+    border: 1.5px solid #e2e8f0;
+    font-family: 'Kanit', sans-serif;
+    width: 240px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.search-input:focus {
+    border-color: var(--secondary-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    pointer-events: none;
 }
 
 .table-wrapper { overflow-x: auto; }
@@ -135,57 +177,121 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 500px;
+    min-width: 750px;
 }
 
 th {
     background: #f8fafc;
-    color: #64748b;
+    color: #475569;
     font-weight: 500;
-    text-align: left;
+    text-align: center;
     padding: 15px 10px;
+    font-size: 14px;
 }
+
+th:nth-child(4) { text-align: left; }
 
 td {
-    padding: 15px 10px;
+    padding: 12px 10px;
     border-bottom: 1px solid #f1f5f9;
+    text-align: center;
+    font-size: 14px;
 }
 
+td:nth-child(4) { text-align: left; }
+
 .meter-input {
-    width: 80px;
+    width: 90px;
     padding: 8px;
     border-radius: 10px;
     border: 1.5px solid #e2e8f0;
     text-align: center;
+    font-family: 'Kanit', sans-serif;
 }
 
+.meter-input:disabled {
+    background-color: #f8fafc;
+    color: #64748b;
+    border-color: #e2e8f0;
+}
+
+/* BUTTONS */
 .btn {
-    padding: 8px 15px;
+    padding: 8px 18px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     color: white;
     cursor: pointer;
+    font-family: 'Kanit', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    min-width: 75px;
+    transition: 0.2s;
 }
 
-.btn-save { background: var(--secondary-blue); }
-.btn-done { background: var(--success-green); }
+.btn-save { background: var(--success-green); }
+.btn-save:hover { background: #15803d; }
+.btn-edit { background: var(--secondary-blue); }
+.btn-edit:hover { background: #1d4ed8; }
 .btn-loading { background: var(--warning-orange); cursor: wait; }
 
+/* STATUS PILLS */
 .status-pill {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 6px;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    display: inline-block;
+    text-align: center;
+    min-width: 100px;
 }
 
-.p-wait { background: #fff7ed; color: #9a3412; }
-.p-done { background: #f0fdf4; color: #166534; }
+.p-wait { background: #fff7ed; color: #c2410c; }
+.p-done { background: #f0fdf4; color: #15803d; font-size: 11px; line-height: 1.3; }
 
+/* PAGINATION */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-top: 25px;
+}
+
+.page-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Kanit', sans-serif;
+    font-size: 14px;
+    color: #475569;
+    transition: 0.2s;
+}
+
+.page-btn:hover {
+    background: #f1f5f9;
+}
+
+.page-btn.active {
+    background: var(--secondary-blue);
+    color: white;
+    border-color: var(--secondary-blue);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 </style>
 </head>
 
 <body>
 
-<!-- 🔥 FLOATING HOME ICON -->
 <div class="floating-home" onclick="goHome()">
     <i data-lucide="home"></i>
 </div>
@@ -196,9 +302,8 @@ td {
 
 <div class="container">
 
-<!-- DASHBOARD -->
 <div class="summary-card">
-    <div class="summary-title">สรุปภาพรวม</div>
+    <div class="summary-title">สรุปภาพรวมในเดือนที่เลือก</div>
     <div class="summary-grid">
         <div class="stat-box">
             <div>ทั้งหมด</div>
@@ -219,21 +324,35 @@ td {
     </div>
 </div>
 
-<!-- TABLE -->
 <div class="main-card">
 
 <div class="top-bar">
-    <span>รายการบ้าน</span>
+    <div class="filter-group">
+        <select id="monthSelect" class="select-input" onchange="loadHouses()">
+            <option value="ม.ค.">ม.ค.</option>
+            <option value="ก.พ.">ก.พ.</option>
+            <option value="มี.ค.">มี.ค.</option>
+            <option value="เม.ย.">เม.ย.</option>
+            <option value="พ.ค.">พ.ค.</option>
+            <option value="มิ.ย.">มิ.ย.</option>
+            <option value="ก.ค.">ก.ค.</option>
+            <option value="ส.ค.">ส.ค.</option>
+            <option value="ก.ย.">ก.ย.</option>
+            <option value="ต.ค.">ต.ค.</option>
+            <option value="พ.ย.">พ.ย.</option>
+            <option value="ธ.ค.">ธ.ค.</option>
+        </select>
+        <select id="yearSelect" class="select-input" onchange="loadHouses()">
+            <option value="2026">2569 (2026)</option>
+            <option value="2025">2568 (2025)</option>
+        </select>
+    </div>
 
-    <div style="display:flex;gap:10px;align-items:center;">
-
-        <input type="number" id="year" class="year-input" readonly>
-
-        <button onclick="closeMonth()"
-            style="background:#2563eb;color:white;border:none;padding:8px 12px;border-radius:10px;">
-            📊 สรุปเดือน
-        </button>
-
+    <div style="display:flex; gap:12px; align-items:center;">
+        <div class="search-wrapper">
+            <i data-lucide="search" class="search-icon" style="width: 18px; height: 18px;"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="ค้นหาด้วยชื่อหรือบ้านเลขที่..." oninput="handleSearch()">
+        </div>
     </div>
 </div>
 
@@ -241,163 +360,287 @@ td {
 <table>
 <thead>
 <tr>
-<th>บ้าน</th>
-<th>ชื่อ</th>
-<th>เก่า</th>
-<th>ใหม่</th>
-<th>บันทึก</th>
+<th style="width: 60px;">ลำดับ</th>
+<th>บ้านเลขที่</th>
+<th style="width: 70px;">หมู่ที่</th>
+<th>ชื่อ - สกุล</th>
+<th>เลขมิเตอร์<br>ครั้งก่อน</th>
+<th>เลขมิเตอร์<br>ปัจจุบัน</th>
+<th>สถานะ</th>
+<th>จัดการ</th>
 </tr>
 </thead>
 <tbody id="table"></tbody>
 </table>
 </div>
 
+<div class="pagination" id="pagination"></div>
+
 </div>
 </div>
 
 <script>
-
-const API = "https://script.google.com/macros/s/AKfycbxzsn3zsiIPvcdDA3bepLpynZ-Od78U_oUZlZCgiN5Mg74xVpuWPoh7nP-cLAhFFGlw4A/exec";
+// ⚠️ เอารหัสลิงก์เว็บแอปตัวล่าสุดของน้ามาใส่แทนที่ลิงก์เก่าตรงนี้ได้เลยครับ!
+const API = "https://script.google.com/macros/s/AKfycbwiBlPvvsZwfhcD_6Xc0B3gL7deBI5_HnwQBa8d5kD6JRvnzGQUwHRM6DW76mU2mqBB/exec";
 
 const now = new Date();
-const month = now.getMonth() + 1;
-const year = now.getFullYear() + 543;
+const monthTH = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
 
-document.getElementById("year").value = year;
+// ตั้งค่าดรอปดาวน์ให้ชี้ที่ เดือน และ ปี ปัจจุบันอัตโนมัติเมื่อเปิดหน้า
+document.getElementById("monthSelect").value = monthTH[now.getMonth()];
+document.getElementById("yearSelect").value = String(now.getFullYear());
 
 let houses = [];
-let countDone = 0;
+let filteredHouses = []; 
+let currentPage = 1;
+const rowsPerPage = 10; 
 
-/* 🔥 กลับหน้าหลัก */
 function goHome() {
     window.location.href = "index.html";
 }
 
+// 🟢 แก้ไขเพื่อสยบบั๊ก CORS: เพิ่มชุดควบคุมสิทธิ์ { method: "GET", redirect: "follow" } เวลา fetch ข้อมูล
 async function loadHouses() {
-
     document.getElementById("table").innerHTML =
-    `<tr><td colspan="5" style="text-align:center;">กำลังโหลด...</td></tr>`;
+    `<tr><td colspan="8" style="text-align:center; padding: 30px;">⏳ กำลังเชื่อมต่อข้อมูลค่าน้ำกับระบบฐานข้อมูล...</td></tr>`;
 
-    const res = await fetch(API + "?type=houses");
-    const data = await res.json();
+    const selectedMonth = document.getElementById("monthSelect").value;
+    const selectedYear = document.getElementById("yearSelect").value;
 
-    houses = data.map((h, i) => ({
-        id: i + 1,
-        house: h.number,
-        village: h.moo,
-        name: h.name,
-        old: h.lastMeter || 0
-    }));
+    try {
+        // ดึงรายชื่อบ้านทั้งหมด (ปลดล็อก CORS ด้วย redirect: follow)
+        const resHouses = await fetch(API + "?type=houses", { method: "GET", redirect: "follow" });
+        const dataHouses = await resHouses.json();
 
+        // ดึงประวัติเดือนที่เลือกมาซ้อนเช็กความต่อเนื่อง
+        const resHistory = await fetch(API + `?type=historyWithNames&year=${selectedYear}&month=${selectedMonth}`, { method: "GET", redirect: "follow" });
+        const dataHistory = await resHistory.json();
+        const historyRecords = Array.isArray(dataHistory) ? dataHistory : [];
+
+        houses = dataHouses.map((h, i) => {
+            const match = historyRecords.find(r => String(r.house).trim() === String(h.number).trim());
+            const hasValue = match ? true : false;
+
+            return {
+                id: i + 1,
+                house: h.number,
+                village: h.moo,
+                name: h.name,
+                old: match ? match.old : (h.lastMeter || 0), // หากเคยบันทึกแล้วให้ยึดค่าเก่าของบิลนั้น ไม่งั้นให้ใช้เลขล่าสุดในชีต DATA
+                newVal: match ? match.new : "",              // แสดงตัวเลขเดิมคาไว้ในช่องได้เลยเมื่อน้ากดรีเฟรชหน้าจอ
+                isDone: hasValue,
+                saveTime: match ? formatDate(match.date) : ""
+            };
+        });
+
+        filteredHouses = [...houses]; 
+        currentPage = 1;
+        render();
+        updateStats();
+    } catch (error) {
+        document.getElementById("table").innerHTML =
+        `<tr><td colspan="8" style="text-align:center; color:red; padding: 30px;">❌ เกิดข้อผิดพลาดในการดึงข้อมูล (CORS บล็อกหรือยังไม่ได้ยืนยันสิทธิ์สคริปต์)</td></tr>`;
+        console.error(error);
+    }
+}
+
+function handleSearch() {
+    const query = document.getElementById("searchInput").value.trim().toLowerCase();
+    
+    if (query === "") {
+        filteredHouses = [...houses]; 
+    } else {
+        filteredHouses = houses.filter(h => 
+            String(h.house).toLowerCase().includes(query) || 
+            String(h.name).toLowerCase().includes(query)
+        );
+    }
+    
+    currentPage = 1; 
     render();
-    updateStats();
 }
 
 function render() {
-
     let html = "";
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const paginatedHouses = filteredHouses.slice(startIndex, endIndex);
 
-    houses.forEach(h => {
+    if (paginatedHouses.length === 0) {
+        document.getElementById("table").innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px; color:#64748b;">❌ ไม่พบข้อมูลบ้านเลขที่หรือชื่อนี้</td></tr>`;
+        document.getElementById("pagination").innerHTML = "";
+        return;
+    }
+
+    paginatedHouses.forEach(h => {
+        let statusHtml = "";
+        let actionBtnHtml = "";
+        let inputDisabled = "";
+
+        if (h.isDone) {
+            statusHtml = `<span class="status-pill p-done">บันทึกแล้ว<br><span style="color:#16a34a; font-size:10px;">${h.saveTime}</span></span>`;
+            actionBtnHtml = `<button class="btn btn-edit" onclick="enableEdit(${h.id}, this)">แก้ไข</button>`;
+            inputDisabled = "disabled";
+        } else {
+            statusHtml = `<span class="status-pill p-wait">รอกรอก</span>`;
+            actionBtnHtml = `<button class="btn btn-save" onclick="save(${h.id}, this)">บันทึก</button>`;
+            inputDisabled = "";
+        }
 
         html += `
         <tr>
-            <td><b>${h.house}</b><br>
-                <span class="status-pill p-wait">ม.${h.village}</span>
-            </td>
-
+            <td>${h.id}</td>
+            <td><b>${h.house}</b></td>
+            <td>${h.village}</td>
             <td>${h.name}</td>
-
             <td id="old_${h.id}">${h.old}</td>
-
             <td>
-                <input class="meter-input" id="new_${h.id}">
+                <input type="number" class="meter-input" id="new_${h.id}" value="${h.newVal}" ${inputDisabled}>
             </td>
-
-            <td>
-                <button class="btn btn-save" onclick="save(${h.id}, this)">
-                    💾
-                </button>
-            </td>
+            <td id="status_cell_${h.id}">${statusHtml}</td>
+            <td id="action_cell_${h.id}">${actionBtnHtml}</td>
         </tr>`;
     });
 
     document.getElementById("table").innerHTML = html;
+    setupPagination();
     lucide.createIcons();
 }
 
+function setupPagination() {
+    const pageCount = Math.ceil(filteredHouses.length / rowsPerPage);
+    const container = document.getElementById("pagination");
+    container.innerHTML = "";
+
+    if (pageCount <= 1) return;
+
+    const prevBtn = document.createElement("button");
+    prevBtn.className = "page-btn";
+    prevBtn.innerHTML = "‹";
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.onclick = () => { currentPage--; render(); };
+    container.appendChild(prevBtn);
+
+    for (let i = 1; i <= pageCount; i++) {
+        const btn = document.createElement("button");
+        btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+        btn.innerText = i;
+        btn.onclick = () => { currentPage = i; render(); };
+        container.appendChild(btn);
+    }
+
+    const nextBtn = document.createElement("button");
+    nextBtn.className = "page-btn";
+    nextBtn.innerHTML = "›";
+    nextBtn.disabled = currentPage === pageCount;
+    nextBtn.onclick = () => { currentPage++; render(); };
+    container.appendChild(nextBtn);
+}
+
 function updateStats() {
+    const countDone = houses.filter(h => h.isDone).length;
 
     document.getElementById("total_houses").innerText = houses.length;
     document.getElementById("done_houses").innerText = countDone;
     document.getElementById("pending_houses").innerText = houses.length - countDone;
 
-    let percent = houses.length
-        ? Math.round((countDone / houses.length) * 100)
-        : 0;
-
+    let percent = houses.length ? Math.round((countDone / houses.length) * 100) : 0;
     document.getElementById("percent_done").innerText = percent + "%";
 }
 
-function save(id, btn) {
+function enableEdit(id, btn) {
+    const input = document.getElementById("new_" + id);
+    input.disabled = false;
+    input.focus();
+    
+    const actionCell = document.getElementById("action_cell_" + id);
+    actionCell.innerHTML = `<button class="btn btn-save" onclick="save(${id}, this)">บันทึก</button>`;
+}
 
+function save(id, btn) {
     const h = houses.find(x => x.id === id);
-    const newMeter = document.getElementById("new_" + id).value;
+    const newMeterInput = document.getElementById("new_" + id);
+    const newMeter = newMeterInput.value;
 
     if (!newMeter || Number(newMeter) < Number(h.old)) {
-        alert("ข้อมูลไม่ถูกต้อง");
+        alert("ข้อมูลไม่ถูกต้อง! เลขมิเตอร์ปัจจุบันต้องมากกว่าหรือเท่ากับเลขครั้งก่อน");
         return;
     }
 
-    fetch(API, {
-        method: "POST",
-        body: JSON.stringify({
-            house: h.house,
-            moo: h.village,
-            name: h.name,
-            old: h.old,
-            new: newMeter,
-            month: month,
-            year: year
-        })
-    })
-    .then(res => res.text())
-    .then(res => {
+    btn.innerText = "⏳";
+    btn.className = "btn btn-loading";
+    btn.disabled = true;
 
-        h.old = newMeter;
-        document.getElementById("old_" + id).innerText = newMeter;
+    const selectedMonth = document.getElementById("monthSelect").value;
+    const selectedYear = document.getElementById("yearSelect").value;
 
-        countDone++;
-        updateStats();
-
-        btn.innerText = "✔";
-        btn.className = "btn btn-done";
-    });
-
-}
-
-function closeMonth() {
-
-    if (!confirm("ยืนยันสรุปเดือนนี้?")) return;
+    const payload = {
+        action: h.isDone ? "edit" : "save", 
+        year: selectedYear,
+        month: selectedMonth,
+        house: String(h.house).trim(),
+        old: Number(h.old),
+        new: Number(newMeter)
+    };
 
     fetch(API, {
         method: "POST",
-        body: JSON.stringify({
-            action: "closeMonth",
-            month: month,
-            year: year
-        })
+        headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+        body: JSON.stringify(payload)
     })
-    .then(res => res.text())
+    .then(res => res.json())
     .then(res => {
-        alert("สรุปเดือนเรียบร้อย");
-        countDone = 0;
-        updateStats();
-        localStorage.removeItem("count");
+        if (res.status === "success" || res.status === "updated") {
+            h.newVal = newMeter;
+            h.isDone = true;
+            
+            const dateOptions = { day: 'numeric', month: 'short' };
+            const formattedDate = now.toLocaleDateString('th-TH', dateOptions);
+            const formattedYear = String(Number(selectedYear) + 543).slice(-2);
+            h.saveTime = `${formattedDate} ${formattedYear}`;
+
+            newMeterInput.disabled = true;
+            updateStats();
+
+            document.getElementById(`status_cell_${id}`).innerHTML = 
+                `<span class="status-pill p-done">บันทึกแล้ว<br><span style="color:#16a34a; font-size:10px;">${h.saveTime}</span></span>`;
+            document.getElementById(`action_cell_${id}`).innerHTML = 
+                `<button class="btn btn-edit" onclick="enableEdit(${id}, this)">แก้ไข</button>`;
+        } else if (res.status === "duplicate") {
+            alert("บ้านหลังนี้ในเดือนนี้เคยมีการบันทึกค่าน้ำไว้แล้วครับน้า!");
+            loadHouses();
+        } else {
+            alert("ระบบแจ้งข้อผิดพลาด: " + (res.message || "บันทึกไม่สำเร็จ"));
+            resetBtn(btn);
+        }
+    })
+    .catch(err => {
+        alert("เกิดข้อผิดพลาดในการบันทึก กรุณาลองใหมี่อีกครั้ง");
+        resetBtn(btn);
+        console.error(err);
     });
 }
 
+function resetBtn(btn) {
+    btn.innerText = "บันทึก";
+    btn.className = "btn btn-save";
+    btn.disabled = false;
+}
+
+function formatDate(rawDate) {
+    if(!rawDate) return "";
+    const d = new Date(rawDate);
+    if(isNaN(d.getTime())) {
+        const today = new Date();
+        return `${today.getDate()} ${document.getElementById("monthSelect").value} ${String(Number(document.getElementById("yearSelect").value)+543).slice(-2)}`;
+    }
+    const thMonth = document.getElementById("monthSelect").value;
+    const thYear = String(d.getFullYear() + 543).slice(-2);
+    return `${d.getDate()} ${thMonth} ${thYear}`;
+}
+
+// โหลดข้อมูลค่าน้ำมาทำงานทันทีกระดานเปิดหน้า
 loadHouses();
-
 </script>
 
 </body>

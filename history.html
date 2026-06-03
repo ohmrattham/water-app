@@ -3,202 +3,211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ประวัติการใช้น้ำ</title>
+<title>ดูข้อมูลย้อนหลัง | WaterSys</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
+:root {
+    --primary-blue: #1e40af;
+    --secondary-blue: #2563eb;
+    --bg-body: #f8fafc;
+    --success-green: #16a34a;
+    --danger-red: #dc2626;
+    --text-dark: #1e293b;
+    --border-color: #e2e8f0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
     font-family: 'Kanit', sans-serif;
-    background: #f8fafc;
-    margin: 0;
+    background-color: var(--bg-body);
+    color: var(--text-dark);
+    min-height: 100vh;
+    padding-bottom: 50px;
 }
 
 .header {
-    background: linear-gradient(135deg,#1e3a8a,#3b82f6);
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
     color: white;
-    padding: 20px;
+    padding: 30px 20px 80px;
     text-align: center;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
 }
 
-.container {
-    max-width: 900px;
-    margin: auto;
-    padding: 15px;
-}
+.container { padding: 0 15px; margin-top: -50px; max-width: 850px; margin-left: auto; margin-right: auto; }
 
-.box {
-    background: white;
-    padding: 15px;
-    border-radius: 16px;
-    margin-top: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
+.main-card { background: white; border-radius: 24px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
 
-select {
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    font-family: Kanit;
-    width: 100%;
-}
+.title-section { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #0f172a; }
 
-/* card */
-.card {
-    background: white;
-    padding: 15px;
-    border-radius: 16px;
-    margin-top: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
+.filter-row { display: grid; grid-template-columns: 2fr 1.5fr 0.8fr; gap: 12px; margin-bottom: 25px; }
 
-.row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid #f1f5f9;
-}
+.filter-group { display: flex; flex-direction: column; gap: 6px; }
 
-.label { color: #64748b; }
-.value { font-weight: 600; }
+.filter-group label { font-size: 13px; color: #64748b; font-weight: 400; }
 
-.month-title {
-    margin-top: 20px;
-    font-weight: 600;
-    color: #1e40af;
-}
+select { padding: 10px 14px; border-radius: 12px; border: 1.5px solid var(--border-color); font-family: 'Kanit', sans-serif; font-size: 14px; background-color: white; outline: none; cursor: pointer; width: 100%; }
+
+.btn-search { background: var(--secondary-blue); color: white; border: none; border-radius: 12px; cursor: pointer; height: 43px; margin-top: auto; }
+
+.btn-search:hover { background: #1d4ed8; }
+
+.profile-info { font-size: 15px; margin-bottom: 20px; color: #334155; display: flex; flex-wrap: wrap; gap: 15px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+
+.stat-card { background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 16px; padding: 15px; text-align: center; }
+
+.stat-num { font-size: 26px; font-weight: 600; }
+
+.table-wrapper { overflow-x: auto; border: 1px solid #f1f5f9; border-radius: 16px; }
+
+table { width: 100%; border-collapse: collapse; min-width: 600px; text-align: center; }
+
+th { background: #f1f5f9; color: #475569; font-weight: 500; padding: 14px 10px; font-size: 14px; }
+
+td { padding: 14px 10px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #334155; }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-    <h2>📊 ประวัติการใช้น้ำทั้งหมด</h2>
-</div>
+<div class="header"><h2>📊 ระบบจัดการค่าน้ำประปา</h2></div>
 
 <div class="container">
+    <div class="main-card">
+        <div class="title-section">ดูข้อมูลย้อนหลัง</div>
 
-<div class="box">
-    <div>เลือกบ้าน</div>
-    <select id="houseSelect" onchange="loadHistory()"></select>
-</div>
+        <div class="filter-row">
+            <div class="filter-group">
+                <label>เลือกชื่อ</label>
+                <select id="houseSelect" onchange="updateProfileInfo()">
+                    <option value="">กำลังโหลดรายชื่อบ้าน...</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>เลือกช่วงเดือน</label>
+                <select id="rangeSelect">
+                    <option value="6">6 เดือนล่าสุด</option>
+                    <option value="12">12 เดือนล่าสุด</option>
+                    <option value="all">ทั้งหมด</option>
+                </select>
+            </div>
+            <button class="btn-search" onclick="loadHistory()">ค้นหา</button>
+        </div>
 
-<div id="result"></div>
+        <div class="profile-info" id="profileInfo" style="display: none;">
+            <span>บ้านเลขที่: <strong id="p-house">-</strong></span>
+            <span>ชื่อ-สกุล: <strong id="p-name">-</strong></span>
+        </div>
 
+        <div class="stats-grid" id="statsGrid" style="display: none;">
+    <div class="stat-card">
+        <div class="stat-label">รวมการใช้น้ำ (หน่วย)</div>
+        <div class="stat-num color-blue" id="totalUsage">0</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">เฉลี่ยต่อเดือน (หน่วย)</div>
+        <div class="stat-num color-green" id="avgUsage">0.00</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">ค่าใช้จ่ายรวม (บาท)</div>
+        <div class="stat-num color-red" id="totalCost">0</div>
+            </div>
+        </div>
+
+        <div id="resultContainer" style="display: none;">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>เดือน</th>
+                            <th>ก่อน</th>
+                            <th>หลัง</th>
+                            <th>ใช้(หน่วย)</th>
+                            <th>ค่าใช้จ่าย(บาท)</th>
+                            <th>วันที่</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="statusMessage" style="text-align: center; color: #64748b; padding: 20px;">กรุณาเลือกรายชื่อบ้านและกดค้นหาข้อมูล</div>
+    </div>
 </div>
 
 <script>
-
-const API = "https://script.google.com/macros/s/AKfycbxzsn3zsiIPvcdDA3bepLpynZ-Od78U_oUZlZCgiN5Mg74xVpuWPoh7nP-cLAhFFGlw4A/exec";
-
-let houses = [];
+const API = "https://script.google.com/macros/s/AKfycbwiBlPvvsZwfhcD_6Xc0B3gL7deBI5_HnwQBa8d5kD6JRvnzGQUwHRM6DW76mU2mqBB/exec";
+let housesCache = [];
 
 async function loadHouses() {
+    try {
+        const res = await fetch(API + "?type=houses", { method: "GET", redirect: "follow" });
+        const data = await res.json();
+        housesCache = data;
+        const sel = document.getElementById("houseSelect");
+        sel.innerHTML = '<option value="">--- เลือกบ้านเลขที่ / รายชื่อ ---</option>';
+        data.forEach(h => {
+            sel.innerHTML += `<option value="${h.number}">บ้านเลขที่ ${h.number} - ${h.name}</option>`;
+        });
+    } catch (err) { console.error(err); }
+}
 
-    const res = await fetch(API + "?type=houses");
-    const data = await res.json();
-
-    houses = data;
-
-    const sel = document.getElementById("houseSelect");
-
-    data.forEach(h => {
-        sel.innerHTML += `
-            <option value="${h.number}">
-                บ้าน ${h.number} - ${h.name}
-            </option>
-        `;
-    });
-
-    loadHistory();
+function updateProfileInfo() {
+    const houseNum = document.getElementById("houseSelect").value;
+    if(!houseNum) { document.getElementById("profileInfo").style.display = "none"; return; }
+    const match = housesCache.find(h => h.number == houseNum);
+    if(match) {
+        document.getElementById("p-house").innerText = match.number;
+        document.getElementById("p-name").innerText = match.name;
+        document.getElementById("profileInfo").style.display = "flex";
+    }
 }
 
 function loadHistory() {
-
     const house = document.getElementById("houseSelect").value;
+    const limitRange = document.getElementById("rangeSelect").value;
+    if (!house) { alert("กรุณาเลือกบ้านก่อนครับ"); return; }
 
-    document.getElementById("result").innerHTML =
-    `<div class="card">กำลังโหลด...</div>`;
-
-    fetch(API + `?type=historyAll&house=${house}`)
+    document.getElementById("statusMessage").innerText = "⏳ กำลังดึงข้อมูล...";
+    fetch(API + `?type=historyAll&house=${house}`, { method: "GET", redirect: "follow" })
     .then(res => res.json())
     .then(data => {
-
-        if(!data || data.length === 0) {
-            document.getElementById("result").innerHTML =
-            `<div class="card">ไม่พบข้อมูล</div>`;
-            return;
-        }
-
-        // จัดกลุ่มตามเดือน
-        const grouped = {};
-
-        data.forEach(d => {
-            const key = d.month || "ไม่ระบุเดือน";
-            if(!grouped[key]) grouped[key] = [];
-            grouped[key].push(d);
+        data.sort((a, b) => (b.year - a.year) || (b.month - a.month));
+        let displayData = limitRange !== "all" ? data.slice(0, parseInt(limitRange)) : data;
+        
+        let totalUnits = 0;
+        let htmlRows = "";
+        
+        displayData.forEach(d => {
+            const usage = Math.max(0, Number(d.new) - Number(d.old));
+            const cost = usage * 7;
+            totalUnits += usage;
+            htmlRows += `<tr>
+                <td class="text-bold">${d.month}/${d.year}</td>
+                <td>${d.old}</td><td>${d.new}</td>
+                <td class="text-bold">${usage}</td>
+                <td class="text-bold" style="color:var(--success-green)">${cost.toLocaleString()}</td>
+                <td style="font-size: 12px;">${d.date || "-"}</td>
+            </tr>`;
         });
 
-        let html = "";
-
-        Object.keys(grouped).forEach(month => {
-
-            html += `<div class="month-title">📅 เดือน ${month}</div>`;
-
-            grouped[month].forEach(d => {
-
-                const usage = Number(d.new) - Number(d.old);
-
-                html += `
-                <div class="card">
-
-                    <div class="row">
-                        <div class="label">บ้าน</div>
-                        <div class="value">${d.house}</div>
-                    </div>
-
-                    <div class="row">
-                        <div class="label">ชื่อ</div>
-                        <div class="value">${d.name}</div>
-                    </div>
-
-                    <div class="row">
-                        <div class="label">เลขเก่า</div>
-                        <div class="value">${d.old}</div>
-                    </div>
-
-                    <div class="row">
-                        <div class="label">เลขใหม่</div>
-                        <div class="value">${d.new}</div>
-                    </div>
-
-                    <div class="row">
-                        <div class="label">ใช้น้ำ</div>
-                        <div class="value">${usage} หน่วย</div>
-                    </div>
-
-                    <div class="row">
-                        <div class="label">วันที่จดมิเตอร์</div>
-                        <div class="value">${d.date || "-"}</div>
-                    </div>
-
-                </div>`;
-            });
-        });
-
-        document.getElementById("result").innerHTML = html;
-
-    })
-    .catch(err => {
-        document.getElementById("result").innerHTML =
-        `<div class="card">โหลดข้อมูลไม่สำเร็จ</div>`;
-        console.error(err);
+        document.getElementById("totalUsage").innerText = totalUnits;
+        document.getElementById("avgUsage").innerText = (totalUnits / displayData.length).toFixed(2);
+        document.getElementById("totalCost").innerText = (totalUnits * 7).toLocaleString();
+        document.getElementById("historyTableBody").innerHTML = htmlRows;
+        document.getElementById("statusMessage").style.display = "none";
+        document.getElementById("statsGrid").style.display = "grid";
+        document.getElementById("resultContainer").style.display = "block";
     });
 }
 
 loadHouses();
-
 </script>
-
 </body>
 </html>

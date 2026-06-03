@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบออกบิลค่าน้ำประปา</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+:root {
+    --bg-body: #f8fafc;
+    --primary-blue: #1e3a8a;
+    --secondary-blue: #2563eb;
+    --text-dark: #1e293b;
+    --border-color: #cbd5e1;
+    --success-green: #16a34a;
+    --success-bg: #dcfce7;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Kanit', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-dark);
+}
+
+.header {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    max-width: 950px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+.box {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.title-section {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #0f172a;
+}
+
+.filter-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+}
+
+.form-group label { font-size: 13px; color: #64748b; }
+select { padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Kanit', sans-serif; font-size: 14px; background: white; outline: none;}
+
+button {
+    padding: 10px 18px; border-radius: 8px; border: none; font-family: 'Kanit', sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s;
+}
+.btn-primary { background: var(--secondary-blue); color: white; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-outline { background: white; border: 1px solid var(--border-color); color: #475569; }
+.btn-outline:hover { background: #f1f5f9; }
+
+/* TABLE STYLING */
+.table-wrapper { overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; }
+th { background: #f8fafc; color: #475569; padding: 12px 8px; font-weight: 500; border-bottom: 1px solid #e2e8f0; }
+td { padding: 12px 8px; border-bottom: 1px solid #f1f5f9; }
+
+.status-badge { background: #e2e8f0; color: #64748b; padding: 4px 10px; border-radius: 6px; font-size: 12px; display: inline-block;}
+.status-success { background: var(--success-bg); color: var(--success-green); font-weight: 500; }
+
+.action-btn { background: var(--secondary-blue); color: white; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; border: none; font-weight: 500; }
+.action-btn:hover { background: #1d4ed8; }
+
+/* POPUP MODAL LAYOUT */
+.modal-backdrop {
+    display: none; position: fixed; z-index: 9999;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+}
+.modal-window {
+    background: white; border-radius: 20px; padding: 25px;
+    width: 90%; max-width: 500px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+.btn-close { background: #e2e8f0; color: #334155; }
+.btn-download { background: #16a34a; color: white; }
+.btn-download:hover { background: #15803d; }
+
+/* DESIGN บิลใบเสร็จ */
+.bill-box { background: white; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; color: black; }
+.bill-header { display: flex; justify-content: space-between; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 12px; }
+.bill-logo-area { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 16px; }
+.bill-meta { text-align: right; font-size: 11px; }
+.bill-info-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 6px; font-size: 13px; background: #f8fafc; padding: 10px; border-radius: 6px; margin-bottom: 12px; }
+.bill-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 12.5px; }
+.bill-table th { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px; color: black; font-weight: 500; }
+.bill-table td { border: 1px solid #e2e8f0; padding: 8px 6px; text-align: center; }
+.bill-total-row { display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 600; padding: 8px 0; border-top: 1px dashed #cbd5e1; }
+.bill-footer-signature { display: flex; justify-content: space-between; font-size: 11.5px; color: #475569; margin-top: 15px; align-items: flex-end; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h2>🧾 ระบบจัดการและพิมพ์ใบเสร็จค่าน้ำประปา</h2>
+</div>
+
+<div class="container">
+    <div class="box">
+        <div class="title-section">ตรวจสอบข้อมูลค่าน้ำประจำเดือน</div>
+        
+        <div class="filter-row">
+            <div class="form-group">
+                <label>เลือกปี รอบบิล</label>
+                <select id="yearSelect">
+                    <option value="2026">2569 (2026)</option>
+                    <option value="2025">2568 (2025)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>เลือกเดือน รอบบิล</label>
+                <select id="monthSelect">
+                    <option value="มกราคม">มกราคม</option>
+                    <option value="กุมภาพันธ์">กุมภาพันธ์</option>
+                    <option value="มีนาคม">มีนาคม</option>
+                    <option value="เมษายน">เมษายน</option>
+                    <option value="พฤษภาคม">พฤษภาคม</option>
+                    <option value="มิถุนายน" selected>มิถุนายน</option>
+                    <option value="กรกฎาคม">กรกฎาคม</option>
+                    <option value="สิงหาคม">สิงหาคม</option>
+                    <option value="กันยายน">กันยายน</option>
+                    <option value="ตุลาคม">ตุลาคม</option>
+                    <option value="พฤศจิกายน">พฤศจิกายน</option>
+                    <option value="ธันวาคม">ธันวาคม</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="fetchMonthlyData()">🔍 ค้นหาข้อมูล</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ลำดับ</th>
+                        <th>บ้านเลขที่</th>
+                        <th>หมู่ที่</th>
+                        <th>ชื่อ - สกุล</th>
+                        <th>สถานะค่าน้ำ</th>
+                        <th>เครื่องมือ</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="6" style="padding: 20px; color: #64748b;">💡 กรุณากดเลือกเดือน พ.ศ. และคลิกปุ่ม "ค้นหาข้อมูล"</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="billModal" class="modal-backdrop" onclick="closePopup(event)">
+    <div class="modal-window">
+        <div class="title-section" style="margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">📋 ตัวอย่างเอกสารใบเสร็จรับเงิน</div>
+        <div id="modalPrintArea"></div>
+        <div class="modal-footer">
+            <button class="btn-outline btn-close" onclick="document.getElementById('billModal').style.display='none'">ปิดหน้าต่าง</button>
+            <button class="btn-primary btn-download" onclick="downloadPDF()">⬇️ โหลดไฟล์ PDF</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ⚠️ หมายเหตุ: ลิงก์ API ตัวล่าสุดที่น้าส่งมาให้ผมผูกเรียบร้อยแล้วครับ
+const API = "https://script.google.com/macros/s/AKfycbwiBlPvvsZwfhcD_6Xc0B3gL7deBI5_HnwQBa8d5kD6JRvnzGQUwHRM6DW76mU2mqBB/exec";
+
+let housesCache = [];
+let monthlyRecords = [];
+let currentSelectedRecord = null;
+
+// 1. โหดลรายชื่อบ้านหลักจากชีต DATA
+async function loadInitialHouses() {
+    try {
+        const res = await fetch(API + "?type=houses");
+        housesCache = await res.json();
+    } catch (e) {
+        console.error("ไม่สามารถดึงข้อมูลตั้งต้นจากชีต DATA ได้", e);
+    }
+}
+
+// 2. ค้นหาประวัติรายเดือนมาเทียบกับตารางหลัก
+async function fetchMonthlyData() {
+    if(housesCache.length === 0) await loadInitialHouses();
+    
+    const year = document.getElementById("yearSelect").value;
+    const month = document.getElementById("monthSelect").value;
+    const tbody = document.getElementById("tableBody");
+    
+    tbody.innerHTML = `<tr><td colspan="6" style="padding:20px; color:#64748b;">⏳ กำลังตรวจสอบรายชื่อและประวัติค่าน้ำ...</td></tr>`;
+
+    try {
+        const res = await fetch(API + `?type=historyWithNames&year=${year}&month=${month}`);
+        const rawData = await res.json();
+        
+        monthlyRecords = Array.isArray(rawData) ? rawData : [];
+        let html = "";
+        
+        housesCache.forEach((h, index) => {
+            const matchRecord = monthlyRecords.find(r => String(r.house).trim() === String(h.number).trim());
+            
+            let statusBadge = `<span class="status-badge">ยังไม่ได้จด</span>`;
+            let actionBtn = `<button class="action-btn" style="background:#cbd5e1; color:#64748b; cursor:not-allowed;" disabled>ไม่มีข้อมูล</button>`;
+
+            if (matchRecord) {
+                statusBadge = `<span class="status-badge status-success">จดแล้ว (ออกบิลได้)</span>`;
+                actionBtn = `<button class="action-btn" onclick="openBillPopup('${h.number}')">สร้างบิล</button>`;
+            }
+
+            html += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td style="font-weight:600;">${h.number}</td>
+                    <td>${h.moo || '-'}</td>
+                    <td style="text-align:left;">${h.name}</td>
+                    <td>${statusBadge}</td>
+                    <td>${actionBtn}</td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = html;
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" style="color:red; padding:20px;">❌ เกิดปัญหาในการดึงข้อมูลจากระบบหลังบ้าน</td></tr>`;
+    }
+}
+
+// 3. ฟังก์ชันเปิด Popup แสดงรายละเอียดบิล
+function openBillPopup(houseNum) {
+    const record = monthlyRecords.find(r => String(r.house).trim() === String(houseNum).trim());
+    if(!record) return;
+    
+    currentSelectedRecord = record;
+    
+    const usage = record.usage !== undefined ? Number(record.usage) : Math.max(0, Number(record.new) - Number(record.old));
+    const pricePerUnit = 8; 
+    const totalAmount = usage * pricePerUnit;
+
+    const billHTML = `
+        <div class="bill-box" id="billPdfRenderObject">
+            <div class="bill-header">
+                <div class="bill-logo-area">💧 <span>ใบเสร็จรับเงินค่าน้ำประปา</span></div>
+                <div class="bill-meta">
+                    <div>รหัสอ้างอิงเอกสาร</div>
+                    <div style="font-weight:600;">INV-${record.year}-${record.house}</div>
+                </div>
+            </div>
+            
+            <div class="bill-info-grid">
+                <div>ชื่อผู้ใช้: <strong>${record.name}</strong></div>
+                <div>หมู่ที่: <strong>${record.moo}</strong></div>
+                <div>บ้านเลขที่: <strong>${record.house}</strong></div>
+                <div>ประจำรอบเดือน: <strong>${record.month} ${Number(record.year) + 543}</strong></div>
+            </div>
+
+            <table class="bill-table">
+                <thead>
+                    <tr>
+                        <th style="text-align:left;">รายการบริการ</th>
+                        <th>เลขเก่า</th>
+                        <th>เลขใหม่</th>
+                        <th>รวมใช้ไป (หน่วย)</th>
+                        <th>รวมเป็นเงิน</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align:left; font-weight:500;">ค่าน้ำอุปโภคบริโภคประจำหมู่บ้าน</td>
+                        <td>${record.old}</td>
+                        <td>${record.new}</td>
+                        <td style="font-weight:600;">${usage}</td>
+                        <td style="text-align:right; font-weight:600;">${totalAmount.toFixed(2)} บาท</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="bill-total-row">
+                <span>ยอดรวมสุทธิที่ต้องชำระทั้งสิ้น:</span>
+                <span style="color:#1e40af; font-size:17px; font-weight:600;">${totalAmount.toFixed(2)} บาท</span>
+            </div>
+
+            <div class="bill-footer-signature">
+                <span>* โปรดชำระเงินกับเจ้าหน้าที่ในเวลาทำการ</span>
+                <div style="text-align:center; width:140px; border-bottom:1px dotted #000; padding-bottom:12px;">ผู้รับเงิน</div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("modalPrintArea").innerHTML = billHTML;
+    document.getElementById("billModal").style.display = "flex";
+}
+
+// 4. ฟังก์ชันดาวน์โหลดไฟล์บิลออกมาเป็น PDF
+function downloadPDF() {
+    const element = document.getElementById("billPdfRenderObject");
+    if(!element) return;
+
+    const opt = {
+        margin:       15,
+        filename:     `ใบเสร็จค่าน้ำ_บ้าน_${currentSelectedRecord.house}_${currentSelectedRecord.month}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, logging: false },
+        jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+}
+
+// 5. ปิดป๊อปอัพเมื่อกดนอกพื้นที่สีขาว
+function closePopup(e) {
+    if(e.target.id === "billModal") {
+        document.getElementById("billModal").style.display = "none";
+    }
+}
+
+// สั่งรันชุดข้อมูลบ้านหลักทันทีเมื่อเปิดเว็บบราวเซอร์
+loadInitialHouses();
+</script>
+</body>
+</html>
