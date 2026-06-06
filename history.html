@@ -9,205 +9,590 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
-:root {
-    --primary-blue: #1e40af;
-    --secondary-blue: #2563eb;
-    --bg-body: #f8fafc;
-    --success-green: #16a34a;
-    --danger-red: #dc2626;
-    --text-dark: #1e293b;
-    --border-color: #e2e8f0;
+:root{
+    --primary-blue:#1e40af;
+    --secondary-blue:#2563eb;
+    --bg-body:#f8fafc;
+    --success-green:#16a34a;
+    --danger-red:#dc2626;
+    --warning-orange:#f59e0b;
+    --text-dark:#1e293b;
+    --border-color:#e2e8f0;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-    font-family: 'Kanit', sans-serif;
-    background-color: var(--bg-body);
-    color: var(--text-dark);
-    min-height: 100vh;
-    padding-bottom: 50px;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-.header {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-    color: white;
-    padding: 30px 20px 80px;
-    text-align: center;
-    border-bottom-left-radius: 40px;
-    border-bottom-right-radius: 40px;
+body{
+    font-family:'Kanit',sans-serif;
+    background:var(--bg-body);
+    color:var(--text-dark);
+    min-height:100vh;
+    padding-bottom:50px;
 }
 
-.container { padding: 0 15px; margin-top: -50px; max-width: 850px; margin-left: auto; margin-right: auto; }
+.header{
+    background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);
+    color:white;
+    padding:30px 20px 85px;
+    text-align:center;
+    border-bottom-left-radius:40px;
+    border-bottom-right-radius:40px;
+    box-shadow:0 8px 25px rgba(37,99,235,.25);
+}
 
-.main-card { background: white; border-radius: 24px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+.container{
+    padding:0 15px;
+    margin-top:-55px;
+    max-width:1100px;
+    margin-left:auto;
+    margin-right:auto;
+}
 
-.title-section { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #0f172a; }
+.main-card{
+    background:white;
+    border-radius:24px;
+    padding:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
+}
 
-.filter-row { display: grid; grid-template-columns: 2fr 1.5fr 0.8fr; gap: 12px; margin-bottom: 25px; }
+.title-section{
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:20px;
+    color:#0f172a;
+}
 
-.filter-group { display: flex; flex-direction: column; gap: 6px; }
+.filter-row{
+    display:grid;
+    grid-template-columns:2fr 1.3fr auto;
+    gap:12px;
+    margin-bottom:25px;
+}
 
-.filter-group label { font-size: 13px; color: #64748b; font-weight: 400; }
+.filter-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
 
-select { padding: 10px 14px; border-radius: 12px; border: 1.5px solid var(--border-color); font-family: 'Kanit', sans-serif; font-size: 14px; background-color: white; outline: none; cursor: pointer; width: 100%; }
+.filter-group label{
+    font-size:13px;
+    color:#64748b;
+}
 
-.btn-search { background: var(--secondary-blue); color: white; border: none; border-radius: 12px; cursor: pointer; height: 43px; margin-top: auto; }
+select{
+    padding:12px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--border-color);
+    font-family:'Kanit',sans-serif;
+    font-size:14px;
+    width:100%;
+    outline:none;
+}
 
-.btn-search:hover { background: #1d4ed8; }
+.btn-search{
+    background:var(--secondary-blue);
+    color:white;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    min-width:120px;
+    font-family:'Kanit',sans-serif;
+    font-size:15px;
+    transition:.2s;
+}
 
-.profile-info { font-size: 15px; margin-bottom: 20px; color: #334155; display: flex; flex-wrap: wrap; gap: 15px; }
+.btn-search:hover{
+    background:#1d4ed8;
+}
 
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+.profile-info{
+    display:none;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-bottom:20px;
+    padding:15px;
+    background:#f8fafc;
+    border-radius:16px;
+}
 
-.stat-card { background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 16px; padding: 15px; text-align: center; }
+.stats-grid{
+    display:none;
+    grid-template-columns:repeat(6,1fr);
+    gap:12px;
+    margin-bottom:20px;
+}
 
-.stat-num { font-size: 26px; font-weight: 600; }
+.stat-card{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    padding:15px;
+    text-align:center;
+}
 
-.table-wrapper { overflow-x: auto; border: 1px solid #f1f5f9; border-radius: 16px; }
+.stat-label{
+    font-size:13px;
+    color:#64748b;
+    margin-bottom:5px;
+}
 
-table { width: 100%; border-collapse: collapse; min-width: 600px; text-align: center; }
+.stat-num{
+    font-size:24px;
+    font-weight:600;
+}
 
-th { background: #f1f5f9; color: #475569; font-weight: 500; padding: 14px 10px; font-size: 14px; }
+.color-blue{color:#2563eb;}
+.color-green{color:#16a34a;}
+.color-red{color:#dc2626;}
+.color-orange{color:#f59e0b;}
 
-td { padding: 14px 10px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #334155; }
+.chart-box{
+    display:none;
+    margin-bottom:20px;
+    padding:15px;
+    border-radius:16px;
+    background:#fff;
+    border:1px solid #e2e8f0;
+}
+
+.table-wrapper{
+    overflow-x:auto;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:700px;
+}
+
+th{
+    background:#f1f5f9;
+    color:#475569;
+    font-weight:600;
+    padding:14px 10px;
+}
+
+td{
+    padding:14px 10px;
+    border-bottom:1px solid #f1f5f9;
+}
+
+tbody tr:hover{
+    background:#f8fafc;
+}
+
+.text-bold{
+    font-weight:600;
+}
+
+#statusMessage{
+    text-align:center;
+    color:#64748b;
+    padding:25px;
+}
+
+@media(max-width:768px){
+
+    .filter-row{
+        grid-template-columns:1fr;
+    }
+
+    .btn-search{
+        height:45px;
+    }
+
+    .stats-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .stat-num{
+        font-size:20px;
+    }
+}
+
+@media(max-width:480px){
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .title-section{
+        font-size:20px;
+    }
+}
 </style>
+
 </head>
 
 <body>
 
-<div class="header"><h2>📊 ระบบจัดการค่าน้ำประปา</h2></div>
+<div class="header">
+    <h2>📊 ระบบจัดการค่าน้ำประปา</h2>
+</div>
 
 <div class="container">
-    <div class="main-card">
-        <div class="title-section">ดูข้อมูลย้อนหลัง</div>
+<div class="main-card">
 
-        <div class="filter-row">
-            <div class="filter-group">
-                <label>เลือกชื่อ</label>
-                <select id="houseSelect" onchange="updateProfileInfo()">
-                    <option value="">กำลังโหลดรายชื่อบ้าน...</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>เลือกช่วงเดือน</label>
-                <select id="rangeSelect">
-                    <option value="6">6 เดือนล่าสุด</option>
-                    <option value="12">12 เดือนล่าสุด</option>
-                    <option value="all">ทั้งหมด</option>
-                </select>
-            </div>
-            <button class="btn-search" onclick="loadHistory()">ค้นหา</button>
-        </div>
+<div class="title-section">
+    ดูข้อมูลย้อนหลัง
+</div>
 
-        <div class="profile-info" id="profileInfo" style="display: none;">
-            <span>บ้านเลขที่: <strong id="p-house">-</strong></span>
-            <span>ชื่อ-สกุล: <strong id="p-name">-</strong></span>
-        </div>
+<div class="filter-row">
 
-        <div class="stats-grid" id="statsGrid" style="display: none;">
+    <div class="filter-group">
+        <label>เลือกชื่อ</label>
+        <select id="houseSelect" onchange="updateProfileInfo()">
+            <option value="">กำลังโหลดรายชื่อบ้าน...</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label>เลือกช่วงเดือน</label>
+        <select id="rangeSelect">
+            <option value="6">6 เดือนล่าสุด</option>
+            <option value="12">12 เดือนล่าสุด</option>
+            <option value="all">ทั้งหมด</option>
+        </select>
+    </div>
+
+    <button class="btn-search" onclick="loadHistory()">
+        🔍 ค้นหา
+    </button>
+
+</div>
+
+<div class="profile-info" id="profileInfo">
+
+    <span>
+        บ้านเลขที่:
+        <strong id="p-house">-</strong>
+    </span>
+
+    <span>
+        ชื่อ-สกุล:
+        <strong id="p-name">-</strong>
+    </span>
+
+</div>
+
+<div class="stats-grid" id="statsGrid">
+
     <div class="stat-card">
-        <div class="stat-label">รวมการใช้น้ำ (หน่วย)</div>
+        <div class="stat-label">รวมการใช้น้ำ</div>
         <div class="stat-num color-blue" id="totalUsage">0</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-label">เฉลี่ยต่อเดือน (หน่วย)</div>
-        <div class="stat-num color-green" id="avgUsage">0.00</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-label">ค่าใช้จ่ายรวม (บาท)</div>
-        <div class="stat-num color-red" id="totalCost">0</div>
-            </div>
-        </div>
 
-        <div id="resultContainer" style="display: none;">
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>เดือน</th>
-                            <th>ก่อน</th>
-                            <th>หลัง</th>
-                            <th>ใช้(หน่วย)</th>
-                            <th>ค่าใช้จ่าย(บาท)</th>
-                            <th>วันที่</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-        <div id="statusMessage" style="text-align: center; color: #64748b; padding: 20px;">กรุณาเลือกรายชื่อบ้านและกดค้นหาข้อมูล</div>
+    <div class="stat-card">
+        <div class="stat-label">เฉลี่ย/เดือน</div>
+        <div class="stat-num color-green" id="avgUsage">0</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">ค่าใช้จ่ายรวม</div>
+        <div class="stat-num color-red" id="totalCost">0</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">จำนวนเดือน</div>
+        <div class="stat-num color-blue" id="monthCount">0</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">ใช้น้ำสูงสุด</div>
+        <div class="stat-num color-orange" id="maxUsage">0</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">ใช้น้ำน้อยสุด</div>
+        <div class="stat-num color-green" id="minUsage">0</div>
+    </div>
+
+</div>
+
+<div class="chart-box" id="chartBox">
+    <canvas id="usageChart"></canvas>
+</div>
+
+<div id="resultContainer" style="display:none;">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>เดือน</th>
+                    <th>ก่อน</th>
+                    <th>หลัง</th>
+                    <th>ใช้ (หน่วย)</th>
+                    <th>ค่าใช้จ่าย (บาท)</th>
+                    <th>วันที่</th>
+                </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+        </table>
     </div>
 </div>
 
+<div id="statusMessage">
+    กรุณาเลือกรายชื่อบ้านและกดค้นหาข้อมูล
+</div>
+
+</div>
+</div>
 <script>
 const API = "https://script.google.com/macros/s/AKfycbwiBlPvvsZwfhcD_6Xc0B3gL7deBI5_HnwQBa8d5kD6JRvnzGQUwHRM6DW76mU2mqBB/exec";
+
 let housesCache = [];
 
+/* ==========================
+   โหลดรายชื่อบ้าน
+========================== */
 async function loadHouses() {
-    try {
-        const res = await fetch(API + "?type=houses", { method: "GET", redirect: "follow" });
-        const data = await res.json();
-        housesCache = data;
-        const sel = document.getElementById("houseSelect");
-        sel.innerHTML = '<option value="">--- เลือกบ้านเลขที่ / รายชื่อ ---</option>';
-        data.forEach(h => {
-            sel.innerHTML += `<option value="${h.number}">บ้านเลขที่ ${h.number} - ${h.name}</option>`;
-        });
-    } catch (err) { console.error(err); }
-}
 
-function updateProfileInfo() {
-    const houseNum = document.getElementById("houseSelect").value;
-    if(!houseNum) { document.getElementById("profileInfo").style.display = "none"; return; }
-    const match = housesCache.find(h => h.number == houseNum);
-    if(match) {
-        document.getElementById("p-house").innerText = match.number;
-        document.getElementById("p-name").innerText = match.name;
-        document.getElementById("profileInfo").style.display = "flex";
+    const sel = document.getElementById("houseSelect");
+
+    try {
+
+        sel.innerHTML =
+            '<option value="">⏳ กำลังโหลดรายชื่อ...</option>';
+
+        const res = await fetch(API + "?type=houses");
+        const data = await res.json();
+
+        housesCache = Array.isArray(data) ? data : [];
+
+        let html =
+            '<option value="">--- เลือกบ้านเลขที่ / รายชื่อ ---</option>';
+
+        housesCache.forEach(h => {
+            html += `
+                <option value="${h.number}">
+                    บ้านเลขที่ ${h.number} - ${h.name}
+                </option>
+            `;
+        });
+
+        sel.innerHTML = html;
+
+    } catch (err) {
+
+        console.error(err);
+
+        sel.innerHTML =
+            '<option value="">❌ โหลดข้อมูลไม่สำเร็จ</option>';
     }
 }
 
-function loadHistory() {
-    const house = document.getElementById("houseSelect").value;
-    const limitRange = document.getElementById("rangeSelect").value;
-    if (!house) { alert("กรุณาเลือกบ้านก่อนครับ"); return; }
+/* ==========================
+   แสดงข้อมูลเจ้าของบ้าน
+========================== */
+function updateProfileInfo() {
 
-    document.getElementById("statusMessage").innerText = "⏳ กำลังดึงข้อมูล...";
-    fetch(API + `?type=historyAll&house=${house}`, { method: "GET", redirect: "follow" })
-    .then(res => res.json())
-    .then(data => {
-        data.sort((a, b) => (b.year - a.year) || (b.month - a.month));
-        let displayData = limitRange !== "all" ? data.slice(0, parseInt(limitRange)) : data;
-        
-        let totalUnits = 0;
-        let htmlRows = "";
-        
-        displayData.forEach(d => {
-            const usage = Math.max(0, Number(d.new) - Number(d.old));
-            const cost = usage * 7;
-            totalUnits += usage;
-            htmlRows += `<tr>
-                <td class="text-bold">${d.month}/${d.year}</td>
-                <td>${d.old}</td><td>${d.new}</td>
-                <td class="text-bold">${usage}</td>
-                <td class="text-bold" style="color:var(--success-green)">${cost.toLocaleString()}</td>
-                <td style="font-size: 12px;">${d.date || "-"}</td>
-            </tr>`;
-        });
+    const houseNum =
+        document.getElementById("houseSelect").value;
 
-        document.getElementById("totalUsage").innerText = totalUnits;
-        document.getElementById("avgUsage").innerText = (totalUnits / displayData.length).toFixed(2);
-        document.getElementById("totalCost").innerText = (totalUnits * 7).toLocaleString();
-        document.getElementById("historyTableBody").innerHTML = htmlRows;
-        document.getElementById("statusMessage").style.display = "none";
-        document.getElementById("statsGrid").style.display = "grid";
-        document.getElementById("resultContainer").style.display = "block";
-    });
+    const profile =
+        document.getElementById("profileInfo");
+
+    if (!houseNum) {
+
+        profile.style.display = "none";
+        return;
+    }
+
+    const match = housesCache.find(
+        h => String(h.number) === String(houseNum)
+    );
+
+    if (match) {
+
+        document.getElementById("p-house").innerText =
+            match.number;
+
+        document.getElementById("p-name").innerText =
+            match.name;
+
+        profile.style.display = "flex";
+    }
 }
 
-loadHouses();
+/* ==========================
+   โหลดประวัติการใช้น้ำ
+========================== */
+async function loadHistory() {
+
+    const house =
+        document.getElementById("houseSelect").value;
+
+    const limitRange =
+        document.getElementById("rangeSelect").value;
+
+    if (!house) {
+
+        alert("กรุณาเลือกบ้านก่อน");
+        return;
+    }
+
+    document.getElementById("statusMessage").style.display =
+        "block";
+
+    document.getElementById("statusMessage").innerHTML =
+        "⏳ กำลังดึงข้อมูล...";
+
+    try {
+
+        const res = await fetch(
+            API +
+            `?type=historyAll&house=${encodeURIComponent(house)}`
+        );
+
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+
+            document.getElementById("historyTableBody").innerHTML =
+                `
+                <tr>
+                    <td colspan="6">
+                        ไม่พบข้อมูลย้อนหลัง
+                    </td>
+                </tr>
+            `;
+
+            document.getElementById("statsGrid").style.display =
+                "none";
+
+            document.getElementById("resultContainer").style.display =
+                "block";
+
+            document.getElementById("statusMessage").innerHTML =
+                "ไม่พบข้อมูล";
+
+            return;
+        }
+
+        data.sort((a, b) =>
+            (parseInt(b.year) - parseInt(a.year)) ||
+            (parseInt(b.month) - parseInt(a.month))
+        );
+
+        const displayData =
+            limitRange === "all"
+                ? data
+                : data.slice(0, Number(limitRange));
+
+        let totalUnits = 0;
+        let usages = [];
+        let htmlRows = "";
+
+        displayData.forEach(d => {
+
+            const usage =
+                Math.max(
+                    0,
+                    Number(d.new) - Number(d.old)
+                );
+
+            const cost = usage * 7;
+
+            totalUnits += usage;
+
+            usages.push(usage);
+
+            const usageColor =
+                usage > 50
+                    ? "#dc2626"
+                    : usage > 30
+                        ? "#f59e0b"
+                        : "#16a34a";
+
+            htmlRows += `
+                <tr>
+                    <td>${d.month}/${d.year}</td>
+                    <td>${d.old}</td>
+                    <td>${d.new}</td>
+                    <td>
+                        <b style="color:${usageColor}">
+                            ${usage}
+                        </b>
+                    </td>
+                    <td style="color:#16a34a">
+                        <b>${cost.toLocaleString()}</b>
+                    </td>
+                    <td>${
+    d.date
+        ? new Date(d.date).toLocaleString("th-TH")
+        : "-"
+}
+                </tr>
+            `;
+        });
+
+        document.getElementById("totalUsage").innerText =
+            totalUnits.toLocaleString();
+
+        document.getElementById("avgUsage").innerText =
+            displayData.length
+                ? (totalUnits / displayData.length).toFixed(2)
+                : "0.00";
+
+        document.getElementById("totalCost").innerText =
+            (totalUnits * 7).toLocaleString();
+
+        if (document.getElementById("monthCount")) {
+            document.getElementById("monthCount").innerText =
+                displayData.length;
+        }
+
+        if (document.getElementById("maxUsage")) {
+            document.getElementById("maxUsage").innerText =
+                usages.length
+                    ? Math.max(...usages)
+                    : 0;
+        }
+
+        if (document.getElementById("minUsage")) {
+            document.getElementById("minUsage").innerText =
+                usages.length
+                    ? Math.min(...usages)
+                    : 0;
+        }
+
+        document.getElementById("historyTableBody").innerHTML =
+            htmlRows;
+
+        document.getElementById("statusMessage").style.display =
+            "none";
+
+        document.getElementById("statsGrid").style.display =
+            "grid";
+
+        document.getElementById("resultContainer").style.display =
+            "block";
+
+    } catch (err) {
+
+        console.error(err);
+
+        document.getElementById("statusMessage").style.display =
+            "block";
+
+        document.getElementById("statusMessage").innerHTML =
+            "❌ โหลดข้อมูลไม่สำเร็จ";
+    }
+}
+
+/* ==========================
+   โหลดข้อมูลเริ่มต้น
+========================== */
+window.onload = () => {
+    loadHouses();
+};
 </script>
 </body>
 </html>

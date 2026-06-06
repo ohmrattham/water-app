@@ -1,242 +1,203 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบน้ำประปาชุมชน บ้านหนองหวาย</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        :root {
-            /* Palette ใหม่ที่ดูแพงขึ้น */
-            --bg-color: #f0f4f8;
-            --primary-gradient: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #3b82f6 100%);
-            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            --card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -6px rgba(0, 0, 0, 0.1);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบน้ำประปาชุมชน</title>
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 
-        body {
-            margin: 0; padding: 0;
-            font-family: 'Kanit', sans-serif;
-            background-color: var(--bg-color);
-            color: #334155;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+<style>
+:root{
+    --bg:#f3f6fb;
+    --card:#ffffff;
+    --shadow:0 10px 25px rgba(0,0,0,0.06);
+    --shadow-hover:0 18px 35px rgba(0,0,0,0.12);
+    --blue1:#0ea5e9;
+    --blue2:#1e40af;
+}
 
-        /* --- Header: ดีไซน์โค้งมนระดับพรีเมียม --- */
-        .header-bg {
-            background: var(--primary-gradient);
-            padding: 50px 24px 65px 24px;
-            border-bottom-left-radius: 50px;
-            border-bottom-right-radius: 50px;
-            box-shadow: 0 15px 30px rgba(30, 64, 175, 0.2);
-            position: relative;
-        }
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:'Kanit',sans-serif;
+    background:var(--bg);
+    color:#1e293b;
+}
 
-        .top-nav {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            color: white;
-        }
+/* HEADER */
+.header{
+    background:linear-gradient(135deg,#0f172a,#1e40af,#38bdf8);
+    padding:50px 20px 70px;
+    border-bottom-left-radius:45px;
+    border-bottom-right-radius:45px;
+    color:white;
+    position:relative;
+}
 
-        .icon-btn {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 12px; border-radius: 18px;
-            display: flex; cursor: pointer;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: 0.3s;
-        }
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
 
-        .icon-btn:hover { background: rgba(255, 255, 255, 0.25); }
+.icon-btn{
+    width:42px;height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,0.15);
+    border-radius:14px;
+    backdrop-filter:blur(10px);
+}
 
-        .app-title-stack { text-align: center; flex-grow: 1; }
-        .app-title-stack h1 { 
-            margin: 0; font-size: 1.4rem; font-weight: 600; 
-            letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        .app-title-stack h2 { 
-            margin: 4px 0 0; font-weight: 300; font-size: 1rem; opacity: 0.85;
-        }
-        .user-tag {
-            margin-top: 12px; font-size: 0.85rem;
-            background: rgba(255, 255, 255, 0.12);
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 5px 16px; border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-        }
+.title{
+    text-align:center;
+    margin-top:10px;
+}
+.title h1{
+    margin:0;
+    font-size:1.2rem;
+    font-weight:600;
+}
+.title p{
+    margin:5px 0;
+    opacity:0.8;
+    font-size:0.9rem;
+}
 
-        /* --- Main Content: Grid System --- */
-        .main-content { padding: 35px 20px; flex: 1; }
+.user{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:10px;
+    background:rgba(255,255,255,0.15);
+    padding:5px 14px;
+    border-radius:20px;
+    font-size:0.8rem;
+}
 
-        .featured-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+/* MAIN */
+.main{
+    margin-top:-35px;
+    padding:20px;
+}
 
-        /* --- ปุ่มเมนูสไตล์ Modern Glass --- */
-        .menu-card {
-            background: white;
-            border-radius: 32px;
-            padding: 25px 20px;
-            height: 190px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            text-decoration: none;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: var(--card-shadow);
-        }
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
 
-        .menu-card:hover { transform: translateY(-10px); box-shadow: var(--card-hover); }
-        .menu-card:active { transform: scale(0.95); }
+/* CARD */
+.card{
+    background:var(--card);
+    border-radius:28px;
+    padding:20px;
+    height:170px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    text-decoration:none;
+    box-shadow:var(--shadow);
+    transition:0.3s;
+}
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:var(--shadow-hover);
+}
 
-        .card-icon {
-            width: 54px; height: 54px;
-            border-radius: 20px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
-        }
+.icon{
+    width:50px;
+    height:50px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
 
-        /* สีปุ่มที่ดูดีขึ้น (Deep & Soft) */
-        .bg-blue { background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #2563eb; }
-        .bg-green { background: linear-gradient(135deg, #f0fdf4, #dcfce7); color: #16a34a; }
-        .bg-purple { background: linear-gradient(135deg, #faf5ff, #f3e8ff); color: #9333ea; }
+.blue{background:#dbeafe;color:#2563eb}
+.green{background:#dcfce7;color:#16a34a}
+.purple{background:#f3e8ff;color:#9333ea}
 
-        .heart-tag { color: #38bdf8; opacity: 0.6; transition: 0.3s; }
-        .menu-card:hover .heart-tag { opacity: 1; transform: scale(1.1); }
+.card h3{
+    margin:0;
+    font-size:0.95rem;
+    font-weight:500;
+    line-height:1.4;
+}
 
-        .card-name {
-            font-size: 1.05rem; font-weight: 500;
-            line-height: 1.4; color: #1e293b;
-        }
+.badge{
+    opacity:0.5;
+}
 
-        /* --- Footer: ข้อมูลผู้พัฒนา --- */
-        footer {
-            padding: 25px; text-align: center;
-            background: white; border-top: 1px solid #e2e8f0;
-            font-size: 0.85rem; color: #94a3b8;
-        }
-        footer b { color: #64748b; font-weight: 500; }
+/* FOOTER */
+footer{
+    text-align:center;
+    font-size:0.75rem;
+    padding:25px;
+    color:#94a3b8;
+}
 
-        /* Sidebar สไตล์ Blur */
-        .sidebar {
-            position: fixed; top: 0; left: -280px;
-            width: 280px; height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px); z-index: 1001;
-            transition: 0.4s; padding: 40px 24px;
-        }
-        .sidebar.active { left: 0; }
-        .overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(4px); z-index: 1000; display: none;
-        }
-        .overlay.active { display: block; }
-    </style>
+/* responsive */
+@media(max-width:420px){
+    .grid{grid-template-columns:1fr}
+}
+</style>
 </head>
+
 <body>
 
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <div style="color: #1e40af; margin-bottom: 40px; display: flex; align-items: center; gap: 12px;">
-            <div style="background: #1e40af; padding: 8px; border-radius: 12px; color: white;">
-                <i data-lucide="droplet" size="24" fill="currentColor"></i>
-            </div>
-            <span style="font-size: 1.4rem; font-weight: 600;">WaterSys</span>
-        </div>
-        <nav style="display: flex; flex-direction: column; gap: 15px;">
-            <a href="#" style="text-decoration: none; color: #1e293b; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: #f8fafc;">
-                <i data-lucide="home" size="20"></i> หน้าหลัก
-            </a>
-            <a href="#" style="text-decoration: none; color: #64748b; display: flex; align-items: center; gap: 12px; padding: 12px;">
-                <i data-lucide="settings" size="20"></i> ตั้งค่าระบบ
-            </a>
-            <hr style="width: 100%; opacity: 0.05; margin: 15px 0;">
-            <a href="#" onclick="logout()" style="text-decoration: none; color: #ef4444; display: flex; align-items: center; gap: 12px; padding: 12px;">
-                <i data-lucide="log-out" size="20"></i> ออกจากระบบ
-            </a>
-        </nav>
-    </aside>
-
-    <div class="header-bg">
-        <div class="top-nav">
-            <div class="icon-btn" onclick="toggleMenu()">
-                <i data-lucide="menu" size="22"></i>
-            </div>
-            
-            <div class="app-title-stack">
-                <h1>ระบบน้ำประปาชุมชน</h1>
-                <h2>บ้านหนองหวาย</h2>
-                <div class="user-tag">
-                    <i data-lucide="user-check" size="14"></i>
-                    <span id="displayUser">Administrator</span>
-                </div>
-            </div>
-
-            <div class="icon-btn">
-                <i data-lucide="bell" size="22"></i>
-            </div>
-        </div>
+<div class="header">
+    <div class="top">
+        <div class="icon-btn"><i data-lucide="menu"></i></div>
+        <div class="icon-btn"><i data-lucide="bell"></i></div>
     </div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="featured-grid">
-            <a href="input.html" class="menu-card">
-                <div class="card-icon bg-blue"><i data-lucide="edit-3" size="26"></i></div>
-                <div class="heart-tag"><i data-lucide="droplets" size="20" fill="currentColor"></i></div>
-                <div class="card-name">กรอกข้อมูล<br>ค่าน้ำประจำเดือน</div>
-            </a>
+    <div class="title">
+        <h1>ระบบน้ำประปาชุมชน</h1>
+        <p>บ้านหนองหวาย</p>
 
-            <a href="history.html" class="menu-card">
-                <div class="card-icon bg-green"><i data-lucide="bar-chart-3" size="26"></i></div>
-                <div class="heart-tag"><i data-lucide="clock" size="20" fill="currentColor"></i></div>
-                <div class="card-name">ประวัติการใช้งาน<br>ย้อนหลัง</div>
-            </a>
-
-            <a href="bill.html" class="menu-card">
-                <div class="card-icon bg-purple"><i data-lucide="file-check-2" size="26"></i></div>
-                <div class="heart-tag"><i data-lucide="printer" size="20" fill="currentColor"></i></div>
-                <div class="card-name">ออกบิลแจ้งหนี้<br>และใบเสร็จ</div>
-            </a>
+        <div class="user">
+            <i data-lucide="user"></i>
+            <span id="user">โอม</span>
         </div>
-    </main>
+    </div>
+</div>
 
-    <!-- Footer -->
-    <footer>
-        <p>© 2026 ระบบบริหารจัดการประปาชุมชน</p>
-        <p>ผู้พัฒนาเว็บแอป: <b>OHM of WaterSys</b></p>
-    </footer>
+<div class="main">
+    <div class="grid">
 
-    <script>
-        lucide.createIcons();
+        <a class="card" href="input.html">
+            <div class="icon blue"><i data-lucide="edit-3"></i></div>
+            <h3>บันทึกค่าน้ำ<br>ประจำเดือน</h3>
+            <div class="badge"><i data-lucide="droplets"></i></div>
+        </a>
 
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
+        <a class="card" href="history.html">
+            <div class="icon green"><i data-lucide="bar-chart-3"></i></div>
+            <h3>ประวัติการใช้งาน<br>และสถิติ</h3>
+            <div class="badge"><i data-lucide="pie-chart"></i></div>
+        </a>
 
-        // ดึงชื่อ User
-        const userName = localStorage.getItem("name") || "Administrator";
-        document.getElementById("displayUser").innerText = userName;
+        <a class="card" href="bill.html">
+            <div class="icon purple"><i data-lucide="file-text"></i></div>
+            <h3>สรุปบิล<br>และใบเสร็จ</h3>
+            <div class="badge"><i data-lucide="printer"></i></div>
+        </a>
 
-        function logout() {
-            if(confirm("ต้องการออกจากระบบใช่หรือไม่?")) {
-                localStorage.clear();
-                window.location = "index.html";
-            }
-        }
-    </script>
+    </div>
+</div>
+
+<footer>
+© 2026 ระบบบริหารจัดการประปาชุมชน<br>
+OHM of WaterSys
+</footer>
+
+<script>
+lucide.createIcons();
+</script>
+
 </body>
 </html>

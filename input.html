@@ -287,6 +287,142 @@ td:nth-child(4) { text-align: left; }
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* ================= MODAL ================= */
+
+.modal-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.modal-overlay.show{
+    display: flex;
+}
+
+.confirm-modal{
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 24px;
+    overflow: hidden;
+    animation: modalPop .25s ease;
+}
+
+@keyframes modalPop{
+    from{
+        opacity:0;
+        transform:scale(.9);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+.modal-header{
+    background: linear-gradient(135deg,#1e40af,#2563eb);
+    color:white;
+    padding:18px;
+    text-align:center;
+    font-size:18px;
+    font-weight:600;
+}
+
+.modal-body{
+    padding:20px;
+}
+
+.modal-info{
+    background:#f8fafc;
+    border-radius:16px;
+    padding:15px;
+    margin-top:10px;
+}
+
+.modal-info div{
+    margin-bottom:8px;
+}
+
+.modal-footer{
+    display:flex;
+    gap:10px;
+    padding:20px;
+}
+
+.modal-btn{
+    flex:1;
+    border:none;
+    border-radius:12px;
+    padding:12px;
+    font-family:'Kanit',sans-serif;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.modal-cancel{
+    background:#e2e8f0;
+}
+
+.modal-confirm{
+    background:#16a34a;
+    color:white;
+}
+
+.modal-confirm:hover{
+    background:#15803d;
+}
+
+/* ============== MOBILE ============== */
+
+@media (max-width:768px){
+
+    .summary-grid{
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .top-bar{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .filter-group{
+        width:100%;
+    }
+
+    .select-input{
+        flex:1;
+    }
+
+    .search-wrapper{
+        width:100%;
+    }
+
+    .search-input{
+        width:100%;
+    }
+
+    .floating-home{
+        width:44px;
+        height:44px;
+    }
+
+    table{
+        min-width:750px;
+    }
+
+}
+.table-wrapper{
+    overflow-x:auto;
+    overflow-y:auto;
+    max-height:70vh;
+    -webkit-overflow-scrolling:touch;
+}
 </style>
 </head>
 
@@ -355,7 +491,40 @@ td:nth-child(4) { text-align: left; }
         </div>
     </div>
 </div>
+<div id="confirmModal" class="modal-overlay">
 
+    <div class="confirm-modal">
+
+        <div class="modal-header">
+            ยืนยันการบันทึกค่าน้ำ
+        </div>
+
+        <div class="modal-body">
+
+            <div class="modal-info" id="modalContent">
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                class="modal-btn modal-cancel"
+                onclick="closeModal()">
+                ยกเลิก
+            </button>
+
+            <button
+                class="modal-btn modal-confirm"
+                id="confirmSaveBtn">
+                บันทึก
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -374,7 +543,7 @@ td:nth-child(4) { text-align: left; }
 </table>
 </div>
 
-<div class="pagination" id="pagination"></div>
+
 
 </div>
 </div>
@@ -392,8 +561,7 @@ document.getElementById("yearSelect").value = String(now.getFullYear());
 
 let houses = [];
 let filteredHouses = []; 
-let currentPage = 1;
-const rowsPerPage = 10; 
+
 
 function goHome() {
     window.location.href = "index.html";
@@ -434,7 +602,6 @@ async function loadHouses() {
         });
 
         filteredHouses = [...houses]; 
-        currentPage = 1;
         render();
         updateStats();
     } catch (error) {
@@ -456,35 +623,63 @@ function handleSearch() {
         );
     }
     
-    currentPage = 1; 
+   
     render();
 }
 
 function render() {
-    let html = "";
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    const paginatedHouses = filteredHouses.slice(startIndex, endIndex);
 
-    if (paginatedHouses.length === 0) {
-        document.getElementById("table").innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px; color:#64748b;">❌ ไม่พบข้อมูลบ้านเลขที่หรือชื่อนี้</td></tr>`;
-        document.getElementById("pagination").innerHTML = "";
+    let html = "";
+
+    if (filteredHouses.length === 0) {
+
+        document.getElementById("table").innerHTML =
+        `<tr>
+            <td colspan="8"
+                style="text-align:center;padding:20px;color:#64748b;">
+                ❌ ไม่พบข้อมูล
+            </td>
+        </tr>`;
+
         return;
     }
 
-    paginatedHouses.forEach(h => {
+    filteredHouses.forEach(h => {
+
         let statusHtml = "";
         let actionBtnHtml = "";
         let inputDisabled = "";
 
         if (h.isDone) {
-            statusHtml = `<span class="status-pill p-done">บันทึกแล้ว<br><span style="color:#16a34a; font-size:10px;">${h.saveTime}</span></span>`;
-            actionBtnHtml = `<button class="btn btn-edit" onclick="enableEdit(${h.id}, this)">แก้ไข</button>`;
+
+            statusHtml =
+            `<span class="status-pill p-done">
+                บันทึกแล้ว<br>
+                <span style="color:#16a34a;font-size:10px;">
+                    ${h.saveTime}
+                </span>
+            </span>`;
+
+            actionBtnHtml =
+            `<button class="btn btn-edit"
+                onclick="enableEdit(${h.id},this)">
+                แก้ไข
+            </button>`;
+
             inputDisabled = "disabled";
+
         } else {
-            statusHtml = `<span class="status-pill p-wait">รอกรอก</span>`;
-            actionBtnHtml = `<button class="btn btn-save" onclick="save(${h.id}, this)">บันทึก</button>`;
-            inputDisabled = "";
+
+            statusHtml =
+            `<span class="status-pill p-wait">
+                รอกรอก
+            </span>`;
+
+            actionBtnHtml =
+            `<button class="btn btn-save"
+                onclick="save(${h.id},this)">
+                บันทึก
+            </button>`;
         }
 
         html += `
@@ -493,49 +688,34 @@ function render() {
             <td><b>${h.house}</b></td>
             <td>${h.village}</td>
             <td>${h.name}</td>
-            <td id="old_${h.id}">${h.old}</td>
+            <td>${h.old}</td>
+
             <td>
-                <input type="number" class="meter-input" id="new_${h.id}" value="${h.newVal}" ${inputDisabled}>
+                <input
+                    type="number"
+                    class="meter-input"
+                    id="new_${h.id}"
+                    value="${h.newVal}"
+                    ${inputDisabled}>
             </td>
-            <td id="status_cell_${h.id}">${statusHtml}</td>
-            <td id="action_cell_${h.id}">${actionBtnHtml}</td>
+
+            <td id="status_cell_${h.id}">
+                ${statusHtml}
+            </td>
+
+            <td id="action_cell_${h.id}">
+                ${actionBtnHtml}
+            </td>
+
         </tr>`;
     });
 
     document.getElementById("table").innerHTML = html;
-    setupPagination();
+
     lucide.createIcons();
 }
 
-function setupPagination() {
-    const pageCount = Math.ceil(filteredHouses.length / rowsPerPage);
-    const container = document.getElementById("pagination");
-    container.innerHTML = "";
 
-    if (pageCount <= 1) return;
-
-    const prevBtn = document.createElement("button");
-    prevBtn.className = "page-btn";
-    prevBtn.innerHTML = "‹";
-    prevBtn.disabled = currentPage === 1;
-    prevBtn.onclick = () => { currentPage--; render(); };
-    container.appendChild(prevBtn);
-
-    for (let i = 1; i <= pageCount; i++) {
-        const btn = document.createElement("button");
-        btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-        btn.innerText = i;
-        btn.onclick = () => { currentPage = i; render(); };
-        container.appendChild(btn);
-    }
-
-    const nextBtn = document.createElement("button");
-    nextBtn.className = "page-btn";
-    nextBtn.innerHTML = "›";
-    nextBtn.disabled = currentPage === pageCount;
-    nextBtn.onclick = () => { currentPage++; render(); };
-    container.appendChild(nextBtn);
-}
 
 function updateStats() {
     const countDone = houses.filter(h => h.isDone).length;
@@ -558,8 +738,12 @@ function enableEdit(id, btn) {
 }
 
 function save(id, btn) {
+
     const h = houses.find(x => x.id === id);
-    const newMeterInput = document.getElementById("new_" + id);
+
+    const newMeterInput =
+        document.getElementById("new_" + id);
+
     const newMeter = newMeterInput.value;
 
     if (!newMeter || Number(newMeter) < Number(h.old)) {
@@ -567,15 +751,52 @@ function save(id, btn) {
         return;
     }
 
+    const used =
+        Number(newMeter) - Number(h.old);
+
+    showConfirmModal({
+        house: h.house,
+        name: h.name,
+        old: h.old,
+        newMeter: newMeter,
+        used: used
+    });
+
+    document.getElementById("confirmSaveBtn").onclick =
+        () => {
+
+        closeModal();
+
+        doSave(
+            id,
+            btn,
+            h,
+            newMeter,
+            newMeterInput
+        );
+    };
+}
+
+    function doSave(
+    id,
+    btn,
+    h,
+    newMeter,
+    newMeterInput
+){
+
     btn.innerText = "⏳";
     btn.className = "btn btn-loading";
     btn.disabled = true;
 
-    const selectedMonth = document.getElementById("monthSelect").value;
-    const selectedYear = document.getElementById("yearSelect").value;
+    const selectedMonth =
+        document.getElementById("monthSelect").value;
+
+    const selectedYear =
+        document.getElementById("yearSelect").value;
 
     const payload = {
-        action: h.isDone ? "edit" : "save", 
+        action: h.isDone ? "edit" : "save",
         year: selectedYear,
         month: selectedMonth,
         house: String(h.house).trim(),
@@ -585,42 +806,104 @@ function save(id, btn) {
 
     fetch(API, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+        headers: {
+            "Content-Type":
+            "text/plain;charset=utf-8"
+        },
         body: JSON.stringify(payload)
     })
     .then(res => res.json())
     .then(res => {
-        if (res.status === "success" || res.status === "updated") {
+
+        if (
+            res.status === "success" ||
+            res.status === "updated"
+        ) {
+
             h.newVal = newMeter;
             h.isDone = true;
-            
-            const dateOptions = { day: 'numeric', month: 'short' };
-            const formattedDate = now.toLocaleDateString('th-TH', dateOptions);
-            const formattedYear = String(Number(selectedYear) + 543).slice(-2);
-            h.saveTime = `${formattedDate} ${formattedYear}`;
+
+            const current = new Date();
+
+            const day = current.getDate();
+
+            const month =
+                monthTH[current.getMonth()];
+
+            const year =
+                String(
+                    current.getFullYear() + 543
+                ).slice(-2);
+
+            const hour =
+                String(
+                    current.getHours()
+                ).padStart(2, "0");
+
+            const minute =
+                String(
+                    current.getMinutes()
+                ).padStart(2, "0");
+
+            h.saveTime =
+                `${day} ${month} ${year} ${hour}:${minute} น.`;
 
             newMeterInput.disabled = true;
+
             updateStats();
 
-            document.getElementById(`status_cell_${id}`).innerHTML = 
-                `<span class="status-pill p-done">บันทึกแล้ว<br><span style="color:#16a34a; font-size:10px;">${h.saveTime}</span></span>`;
-            document.getElementById(`action_cell_${id}`).innerHTML = 
-                `<button class="btn btn-edit" onclick="enableEdit(${id}, this)">แก้ไข</button>`;
-        } else if (res.status === "duplicate") {
-            alert("บ้านหลังนี้ในเดือนนี้เคยมีการบันทึกค่าน้ำไว้แล้วครับน้า!");
+            document.getElementById(
+                `status_cell_${id}`
+            ).innerHTML =
+            `<span class="status-pill p-done">
+                บันทึกแล้ว<br>
+                <span style="color:#16a34a;font-size:10px;">
+                    ${h.saveTime}
+                </span>
+            </span>`;
+
+            document.getElementById(
+                `action_cell_${id}`
+            ).innerHTML =
+            `<button
+                class="btn btn-edit"
+                onclick="enableEdit(${id}, this)">
+                แก้ไข
+            </button>`;
+
+        }
+        else if (
+            res.status === "duplicate"
+        ) {
+
+            alert(
+                "บ้านหลังนี้ในเดือนนี้เคยมีการบันทึกแล้ว"
+            );
+
             loadHouses();
-        } else {
-            alert("ระบบแจ้งข้อผิดพลาด: " + (res.message || "บันทึกไม่สำเร็จ"));
+        }
+        else {
+
+            alert(
+                "ระบบแจ้งข้อผิดพลาด : " +
+                (res.message || "บันทึกไม่สำเร็จ")
+            );
+
             resetBtn(btn);
         }
+
     })
     .catch(err => {
-        alert("เกิดข้อผิดพลาดในการบันทึก กรุณาลองใหมี่อีกครั้ง");
+
+        alert(
+            "เกิดข้อผิดพลาดในการบันทึก"
+        );
+
         resetBtn(btn);
+
         console.error(err);
     });
 }
-
 function resetBtn(btn) {
     btn.innerText = "บันทึก";
     btn.className = "btn btn-save";
@@ -628,19 +911,60 @@ function resetBtn(btn) {
 }
 
 function formatDate(rawDate) {
-    if(!rawDate) return "";
-    const d = new Date(rawDate);
-    if(isNaN(d.getTime())) {
-        const today = new Date();
-        return `${today.getDate()} ${document.getElementById("monthSelect").value} ${String(Number(document.getElementById("yearSelect").value)+543).slice(-2)}`;
-    }
-    const thMonth = document.getElementById("monthSelect").value;
-    const thYear = String(d.getFullYear() + 543).slice(-2);
-    return `${d.getDate()} ${thMonth} ${thYear}`;
-}
 
+    if (!rawDate) return "";
+
+    const d = new Date(rawDate);
+
+    if (isNaN(d.getTime())) return "";
+
+    const day = d.getDate();
+
+    const month =
+        monthTH[d.getMonth()];
+
+    const year =
+        String(
+            d.getFullYear() + 543
+        ).slice(-2);
+
+    const hour =
+        String(
+            d.getHours()
+        ).padStart(2, "0");
+
+    const minute =
+        String(
+            d.getMinutes()
+        ).padStart(2, "0");
+
+    return `${day} ${month} ${year} ${hour}:${minute} น.`;
+}
 // โหลดข้อมูลค่าน้ำมาทำงานทันทีกระดานเปิดหน้า
 loadHouses();
+
+let pendingSave = null;
+
+function showConfirmModal(data){
+
+    const modal = document.getElementById("confirmModal");
+
+    document.getElementById("modalContent").innerHTML = `
+        <div><b>บ้านเลขที่:</b> ${data.house}</div>
+        <div><b>ชื่อ:</b> ${data.name}</div>
+        <div><b>มิเตอร์เดิม:</b> ${data.old}</div>
+        <div><b>มิเตอร์ใหม่:</b> ${data.newMeter}</div>
+        <div><b>ใช้น้ำ:</b> ${data.used} หน่วย</div>
+    `;
+
+    modal.classList.add("show");
+}
+
+function closeModal(){
+    document
+        .getElementById("confirmModal")
+        .classList.remove("show");
+}
 </script>
 
 </body>
