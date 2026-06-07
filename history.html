@@ -227,6 +227,58 @@ tbody tr:hover{
         font-size:20px;
     }
 }
+
+.back-btn{
+    position:fixed;
+    top:18px;
+    left:18px;
+    width:44px;
+    height:44px;
+    background:white;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+    cursor:pointer;
+    z-index:999;
+    transition:0.2s;
+}
+
+.back-btn:hover{
+    transform:scale(1.08);
+}
+
+.back-btn{
+    position:fixed;
+    top:18px;
+    left:18px;
+    width:46px;
+    height:46px;
+    background:white;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 10px 25px rgba(0,0,0,0.18);
+    cursor:pointer;
+    z-index:999999; /* 🔥 สำคัญมาก */
+}
+
+/* hover effect */
+.back-btn:hover{
+    transform:scale(1.08);
+}
+
+/* click animation class */
+.back-btn.active{
+    transform:translateX(-8px) scale(0.9);
+    opacity:0.6;
+}
+.header{
+    position:relative;
+    z-index:1;
+}
 </style>
 
 </head>
@@ -338,6 +390,9 @@ tbody tr:hover{
     </div>
 </div>
 
+<div class="back-btn" onclick="goBack()">
+    <i data-lucide="arrow-left"></i>
+</div>
 <div id="statusMessage">
     กรุณาเลือกรายชื่อบ้านและกดค้นหาข้อมูล
 </div>
@@ -593,6 +648,24 @@ async function loadHistory() {
 window.onload = () => {
     loadHouses();
 };
+
+function goBack(){
+
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+
+    const btn = document.querySelector(".back-btn");
+    btn.style.transform = "translateX(-8px) scale(0.9)";
+    btn.style.opacity = "0.6";
+
+    setTimeout(() => {
+        window.location.href = "main.html";
+    }, 150);
+}
+document.addEventListener("DOMContentLoaded", () => {
+    lucide.createIcons();
+});
 </script>
 </body>
 </html>

@@ -194,157 +194,238 @@ td { padding: 12px 8px; border-bottom: 1px solid #f1f5f9; }
 </div>
 
 <script>
-// ⚠️ หมายเหตุ: ลิงก์ API ตัวล่าสุดที่น้าส่งมาให้ผมผูกเรียบร้อยแล้วครับ
+// ⚠️ API
 const API = "https://script.google.com/macros/s/AKfycbwiBlPvvsZwfhcD_6Xc0B3gL7deBI5_HnwQBa8d5kD6JRvnzGQUwHRM6DW76mU2mqBB/exec";
 
+// =========================
+// STATE
+// =========================
 let housesCache = [];
 let monthlyRecords = [];
 let currentSelectedRecord = null;
 
-// 1. โหดลรายชื่อบ้านหลักจากชีต DATA
+// =========================
+// NORMALIZE
+// =========================
+const norm = (v) =>
+  String(v ?? "")
+    .trim()
+    .replace(/\s/g, "")
+    .replace(/^0+/, "");
+
+// =========================
+// MONTH MAP (สำคัญมาก)
+// =========================
+const monthMap = {
+  "มกราคม": "1",
+  "กุมภาพันธ์": "2",
+  "มีนาคม": "3",
+  "เมษายน": "4",
+  "พฤษภาคม": "5",
+  "มิถุนายน": "6",
+  "กรกฎาคม": "7",
+  "สิงหาคม": "8",
+  "กันยายน": "9",
+  "ตุลาคม": "10",
+  "พฤศจิกายน": "11",
+  "ธันวาคม": "12"
+};
+
+// =========================
+// LOAD HOUSES
+// =========================
 async function loadInitialHouses() {
-    try {
-        const res = await fetch(API + "?type=houses");
-        housesCache = await res.json();
-    } catch (e) {
-        console.error("ไม่สามารถดึงข้อมูลตั้งต้นจากชีต DATA ได้", e);
-    }
+  try {
+    const res = await fetch(API + "?type=houses");
+    housesCache = await res.json();
+  } catch (e) {
+    console.error("โหลดบ้านไม่สำเร็จ", e);
+  }
 }
 
-// 2. ค้นหาประวัติรายเดือนมาเทียบกับตารางหลัก
+// =========================
+// FETCH MONTHLY DATA
+// =========================
 async function fetchMonthlyData() {
-    if(housesCache.length === 0) await loadInitialHouses();
-    
-    const year = document.getElementById("yearSelect").value;
-    const month = document.getElementById("monthSelect").value;
-    const tbody = document.getElementById("tableBody");
-    
-    tbody.innerHTML = `<tr><td colspan="6" style="padding:20px; color:#64748b;">⏳ กำลังตรวจสอบรายชื่อและประวัติค่าน้ำ...</td></tr>`;
+  if (housesCache.length === 0) await loadInitialHouses();
 
-    try {
-        const res = await fetch(API + `?type=historyWithNames&year=${year}&month=${month}`);
-        const rawData = await res.json();
-        
-        monthlyRecords = Array.isArray(rawData) ? rawData : [];
-        let html = "";
-        
-        housesCache.forEach((h, index) => {
-            const matchRecord = monthlyRecords.find(r => String(r.house).trim() === String(h.number).trim());
-            
-            let statusBadge = `<span class="status-badge">ยังไม่ได้จด</span>`;
-            let actionBtn = `<button class="action-btn" style="background:#cbd5e1; color:#64748b; cursor:not-allowed;" disabled>ไม่มีข้อมูล</button>`;
+  const year = document.getElementById("yearSelect").value;
+  const monthRaw = document.getElementById("monthSelect").value;
+  const month = monthMap[monthRaw]; // ✅ แปลงเป็นเลขเดือน
 
-            if (matchRecord) {
-                statusBadge = `<span class="status-badge status-success">จดแล้ว (ออกบิลได้)</span>`;
-                actionBtn = `<button class="action-btn" onclick="openBillPopup('${h.number}')">สร้างบิล</button>`;
-            }
+  const tbody = document.getElementById("tableBody");
 
-            html += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td style="font-weight:600;">${h.number}</td>
-                    <td>${h.moo || '-'}</td>
-                    <td style="text-align:left;">${h.name}</td>
-                    <td>${statusBadge}</td>
-                    <td>${actionBtn}</td>
-                </tr>
-            `;
-        });
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="6" style="padding:20px; color:#64748b;">
+        ⏳ กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
 
-        tbody.innerHTML = html;
-    } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="6" style="color:red; padding:20px;">❌ เกิดปัญหาในการดึงข้อมูลจากระบบหลังบ้าน</td></tr>`;
-    }
-}
+  try {
+    const res = await fetch(
+      `${API}?type=historyWithNames&year=${year}&month=${month}`
+    );
 
-// 3. ฟังก์ชันเปิด Popup แสดงรายละเอียดบิล
-function openBillPopup(houseNum) {
-    const record = monthlyRecords.find(r => String(r.house).trim() === String(houseNum).trim());
-    if(!record) return;
-    
-    currentSelectedRecord = record;
-    
-    const usage = record.usage !== undefined ? Number(record.usage) : Math.max(0, Number(record.new) - Number(record.old));
-    const pricePerUnit = 8; 
-    const totalAmount = usage * pricePerUnit;
+    const rawData = await res.json();
+    monthlyRecords = Array.isArray(rawData) ? rawData : [];
 
-    const billHTML = `
-        <div class="bill-box" id="billPdfRenderObject">
-            <div class="bill-header">
-                <div class="bill-logo-area">💧 <span>ใบเสร็จรับเงินค่าน้ำประปา</span></div>
-                <div class="bill-meta">
-                    <div>รหัสอ้างอิงเอกสาร</div>
-                    <div style="font-weight:600;">INV-${record.year}-${record.house}</div>
-                </div>
-            </div>
-            
-            <div class="bill-info-grid">
-                <div>ชื่อผู้ใช้: <strong>${record.name}</strong></div>
-                <div>หมู่ที่: <strong>${record.moo}</strong></div>
-                <div>บ้านเลขที่: <strong>${record.house}</strong></div>
-                <div>ประจำรอบเดือน: <strong>${record.month} ${Number(record.year) + 543}</strong></div>
-            </div>
+    let html = "";
 
-            <table class="bill-table">
-                <thead>
-                    <tr>
-                        <th style="text-align:left;">รายการบริการ</th>
-                        <th>เลขเก่า</th>
-                        <th>เลขใหม่</th>
-                        <th>รวมใช้ไป (หน่วย)</th>
-                        <th>รวมเป็นเงิน</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="text-align:left; font-weight:500;">ค่าน้ำอุปโภคบริโภคประจำหมู่บ้าน</td>
-                        <td>${record.old}</td>
-                        <td>${record.new}</td>
-                        <td style="font-weight:600;">${usage}</td>
-                        <td style="text-align:right; font-weight:600;">${totalAmount.toFixed(2)} บาท</td>
-                    </tr>
-                </tbody>
-            </table>
+    housesCache.forEach((h, index) => {
+      const houseNo = norm(h.number ?? h.house);
 
-            <div class="bill-total-row">
-                <span>ยอดรวมสุทธิที่ต้องชำระทั้งสิ้น:</span>
-                <span style="color:#1e40af; font-size:17px; font-weight:600;">${totalAmount.toFixed(2)} บาท</span>
-            </div>
+      const matchRecord = monthlyRecords.find((r) =>
+        norm(r.house) === houseNo
+      );
 
-            <div class="bill-footer-signature">
-                <span>* โปรดชำระเงินกับเจ้าหน้าที่ในเวลาทำการ</span>
-                <div style="text-align:center; width:140px; border-bottom:1px dotted #000; padding-bottom:12px;">ผู้รับเงิน</div>
-            </div>
-        </div>
+      let statusBadge = `<span class="status-badge">ยังไม่ได้จด</span>`;
+      let actionBtn = `<button class="action-btn" style="background:#cbd5e1; color:#64748b;" disabled>ไม่มีข้อมูล</button>`;
+
+      if (matchRecord) {
+        statusBadge = `<span class="status-badge status-success">จดแล้ว (ออกบิลได้)</span>`;
+
+        actionBtn = `
+          <button class="action-btn"
+            onclick="openBillPopup('${houseNo}')">
+            สร้างบิล
+          </button>
+        `;
+      }
+
+      html += `
+        <tr>
+          <td>${index + 1}</td>
+          <td style="font-weight:600;">${h.number ?? h.house}</td>
+          <td>${h.moo || "-"}</td>
+          <td style="text-align:left;">${h.name || "-"}</td>
+          <td>${statusBadge}</td>
+          <td>${actionBtn}</td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML = html;
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="color:red; padding:20px;">
+          ❌ โหลดข้อมูลไม่สำเร็จ
+        </td>
+      </tr>
     `;
-
-    document.getElementById("modalPrintArea").innerHTML = billHTML;
-    document.getElementById("billModal").style.display = "flex";
+  }
 }
 
-// 4. ฟังก์ชันดาวน์โหลดไฟล์บิลออกมาเป็น PDF
+// =========================
+// OPEN BILL
+// =========================
+function openBillPopup(houseNum) {
+  const record = monthlyRecords.find(
+    (r) => norm(r.house) === norm(houseNum)
+  );
+
+  if (!record) {
+    alert("ไม่พบข้อมูลบิลของบ้านนี้");
+    return;
+  }
+
+  currentSelectedRecord = record;
+
+  const usage =
+    record.usage !== undefined
+      ? Number(record.usage)
+      : Math.max(0, Number(record.new || 0) - Number(record.old || 0));
+
+  const pricePerUnit = 8;
+  const totalAmount = usage * pricePerUnit;
+
+  const billHTML = `
+    <div class="bill-box" id="billPdfRenderObject">
+
+      <div class="bill-header">
+        <div class="bill-logo-area">💧 <span>ใบเสร็จค่าน้ำประปา</span></div>
+        <div class="bill-meta">
+          <div>INV</div>
+          <div style="font-weight:600;">
+            ${record.year}-${record.house}
+          </div>
+        </div>
+      </div>
+
+      <div class="bill-info-grid">
+        <div>ชื่อ: <strong>${record.name}</strong></div>
+        <div>หมู่: <strong>${record.moo}</strong></div>
+        <div>บ้านเลขที่: <strong>${record.house}</strong></div>
+        <div>เดือน: <strong>${record.month} ${Number(record.year) + 543}</strong></div>
+      </div>
+
+      <table class="bill-table">
+        <thead>
+          <tr>
+            <th>รายการ</th>
+            <th>เก่า</th>
+            <th>ใหม่</th>
+            <th>หน่วย</th>
+            <th>รวม</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ค่าน้ำประปา</td>
+            <td>${record.old}</td>
+            <td>${record.new}</td>
+            <td>${usage}</td>
+            <td>${totalAmount.toFixed(2)} บาท</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="bill-total-row">
+        <span>รวมทั้งหมด</span>
+        <span>${totalAmount.toFixed(2)} บาท</span>
+      </div>
+
+    </div>
+  `;
+
+  document.getElementById("modalPrintArea").innerHTML = billHTML;
+  document.getElementById("billModal").style.display = "flex";
+}
+
+// =========================
+// PDF EXPORT
+// =========================
 function downloadPDF() {
-    const element = document.getElementById("billPdfRenderObject");
-    if(!element) return;
+  const element = document.getElementById("billPdfRenderObject");
+  if (!element) return;
 
-    const opt = {
-        margin:       15,
-        filename:     `ใบเสร็จค่าน้ำ_บ้าน_${currentSelectedRecord.house}_${currentSelectedRecord.month}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, logging: false },
-        jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save();
+  html2pdf()
+    .set({
+      margin: 10,
+      filename: `bill_${currentSelectedRecord?.house || "unknown"}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "mm", format: "a5", orientation: "portrait" },
+    })
+    .from(element)
+    .save();
 }
 
-// 5. ปิดป๊อปอัพเมื่อกดนอกพื้นที่สีขาว
+// =========================
+// CLOSE MODAL
+// =========================
 function closePopup(e) {
-    if(e.target.id === "billModal") {
-        document.getElementById("billModal").style.display = "none";
-    }
+  if (e.target.id === "billModal") {
+    document.getElementById("billModal").style.display = "none";
+  }
 }
 
-// สั่งรันชุดข้อมูลบ้านหลักทันทีเมื่อเปิดเว็บบราวเซอร์
+// =========================
+// INIT
+// =========================
 loadInitialHouses();
 </script>
 </body>

@@ -1,231 +1,307 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เข้าสู่ระบบ | WaterSys</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เข้าสู่ระบบ | WaterSys</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:'Kanit',sans-serif;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e40af,#38bdf8);
+    overflow:hidden;
+}
+
+/* background */
+.bg{
+    position:absolute;
+    width:300px;
+    height:300px;
+    border-radius:50%;
+    filter:blur(60px);
+    opacity:0.4;
+}
+.bg1{background:#38bdf8;top:-100px;left:-100px;}
+.bg2{background:#1e40af;bottom:-120px;right:-120px;}
+
+/* CARD */
+.card{
+    width:92%;
+    max-width:400px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:22px;
+    padding:26px;
+    color:white;
+    box-shadow:0 20px 50px rgba(0,0,0,0.3);
+    animation:popIn 0.6s ease;
+}
+
+@keyframes popIn{
+    from{transform:translateY(20px);opacity:0}
+    to{transform:translateY(0);opacity:1}
+}
+
+/* brand */
+.brand-box{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.logo{
+    font-size:30px;
+    margin-bottom:6px;
+    animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-6px)}
+}
+
+.brand{font-size:20px;font-weight:600}
+.location{font-size:13px;opacity:0.85}
+
+/* input */
+.input{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:rgba(255,255,255,0.15);
+    padding:12px;
+    border-radius:14px;
+    margin-top:12px;
+    transition:0.2s;
+}
+
+.input:focus-within{
+    background:rgba(255,255,255,0.25);
+    transform:scale(1.02);
+}
+
+.input input{
+    flex:1;
+    border:none;
+    outline:none;
+    background:transparent;
+    color:white;
+    font-size:16px;
+}
+
+.input input::placeholder{
+    color:rgba(255,255,255,0.7);
+}
+
+.eye{
+    cursor:pointer;
+}
+
+/* button */
+button{
+    width:100%;
+    padding:12px;
+    margin-top:14px;
+    border:none;
+    border-radius:14px;
+    font-weight:600;
+    color:white;
+    cursor:pointer;
+    background:linear-gradient(135deg,#38bdf8,#1e40af);
+    transition:0.2s;
+    position:relative;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+button:disabled{
+    opacity:0.7;
+    cursor:not-allowed;
+}
+
+/* spinner */
+.spinner{
+    width:18px;
+    height:18px;
+    border:2px solid rgba(255,255,255,0.3);
+    border-top:2px solid white;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    display:none;
+    position:absolute;
+    left:20px;
+}
+
+@keyframes spin{
+    0%{transform:rotate(0)}
+    100%{transform:rotate(360deg)}
+}
+
+/* message */
+.msg{
+    text-align:center;
+    margin-top:10px;
+    font-size:13px;
+    min-height:18px;
+}
+
+/* footer */
+.footer{
+    margin-top:18px;
+    text-align:center;
+    font-size:11px;
+    opacity:0.85;
+}
 </style>
 </head>
 
 <body>
 
-<div class="bg-top"></div>
-
-<div class="circle circle1"></div>
-<div class="circle circle2"></div>
+<div class="bg bg1"></div>
+<div class="bg bg2"></div>
 
 <div class="card">
 
-    <div class="logo-box">
-        <i data-lucide="droplets" size="42"></i>
+    <!-- BRAND -->
+    <div class="brand-box">
+        <div class="logo">🏛️</div>
+        <div class="brand">WaterSys</div>
+        <div class="location">📍 บ้านหนองหวาย หมู่ 12</div>
     </div>
 
-    <div class="brand-name">
-        WaterSys
-    </div>
+    <!-- FORM -->
+    <form onsubmit="handleLogin(event)">
 
-    <div class="welcome-text">
-        ระบบจัดการน้ำประปาอัจฉริยะ
-    </div>
-
-    <form id="loginForm" onsubmit="handleLogin(event)">
-
-        <div class="input-group">
-            <i data-lucide="user" class="main-icon" size="20"></i>
-
-            <input
-                type="text"
-                id="userInp"
-                placeholder="ชื่อผู้ใช้งาน"
-                autocomplete="username"
-                required
-            >
+        <div class="input">
+            <i data-lucide="user"></i>
+            <input type="text" id="userInp" placeholder="ชื่อผู้ใช้งาน" required>
         </div>
 
-        <div class="input-group">
-            <i data-lucide="lock" class="main-icon" size="20"></i>
-
-            <input
-                type="password"
-                id="passInp"
-                placeholder="รหัสผ่าน"
-                autocomplete="current-password"
-                required
-            >
-
-            <i
-                data-lucide="eye"
-                class="eye-icon"
-                id="togglePassword"
-                onclick="togglePass()"
-            ></i>
+        <div class="input">
+            <i data-lucide="lock"></i>
+            <input type="password" id="passInp" placeholder="รหัสผ่าน" required>
+            <i data-lucide="eye" class="eye" onclick="togglePass()"></i>
         </div>
 
-        <button
-            type="submit"
-            id="loginBtn"
-            class="btn-login"
-        >
-            <div class="spinner"></div>
-
-            <span class="btn-text">
-                เข้าสู่ระบบ
-            </span>
+        <button id="btn">
+            <div class="spinner" id="spin"></div>
+            <span id="txt">เข้าสู่ระบบ</span>
         </button>
+
+        <div class="msg" id="msg"></div>
 
     </form>
 
-    <div id="msg"></div>
+    <div class="footer">
+        🧾 ระบบน้ำประปาชุมชน<br>
+        พัฒนาเว็บแอพโดย <b>ผู้ใหญ่บ้านหมู่ 12</b>
+    </div>
 
 </div>
 
 <script>
+lucide.createIcons();
 
-if (localStorage.getItem("login") === "true") {
+/* auto login */
+if(localStorage.getItem("login")==="true"){
     window.location.replace("main.html");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    lucide.createIcons();
-});
-
-function togglePass() {
-
-    const passInp = document.getElementById("passInp");
-
-    if(passInp.type === "password"){
-
-        passInp.type = "text";
-
-    }else{
-
-        passInp.type = "password";
-
-    }
+/* toggle password */
+function togglePass(){
+    const p=document.getElementById("passInp");
+    p.type = p.type==="password" ? "text" : "password";
 }
 
-const API =
-"https://script.google.com/macros/s/AKfycbxnc69DpHYtL3KNTP6Y2DoStQhZ7xhgDNjBNH8p3Lzac-VRBn937XPmQX43JX5KDu67/exec?type=users";
+/* API */
+const API="https://script.google.com/macros/s/AKfycbxnc69DpHYtL3KNTP6Y2DoStQhZ7xhgDNjBNH8p3Lzac-VRBn937XPmQX43JX5KDu67/exec?type=users";
 
-let users = [];
+let users=[];
 
-async function fetchUsers() {
-
-    try {
-
-        const response = await fetch(API);
-        users = await response.json();
-
-    } catch(err) {
-
-        console.error(err);
-
+/* safer fetch */
+async function loadUsers(){
+    try{
+        const res=await fetch(API);
+        users=await res.json();
+    }catch(e){
+        document.getElementById("msg").style.color="#ef4444";
+        document.getElementById("msg").innerText="❌ ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์";
     }
 }
+loadUsers();
 
-fetchUsers();
+/* login */
+async function handleLogin(e){
+e.preventDefault();
 
-async function handleLogin(event){
+const u=document.getElementById("userInp").value.trim();
+const p=document.getElementById("passInp").value.trim();
 
-    event.preventDefault();
+const btn=document.getElementById("btn");
+const spin=document.getElementById("spin");
+const txt=document.getElementById("txt");
+const msg=document.getElementById("msg");
 
-    const btn =
-        document.getElementById("loginBtn");
+btn.disabled=true;
+spin.style.display="block";
+txt.style.opacity="0";
+msg.innerText="กำลังตรวจสอบ...";
 
-    const btnText =
-        btn.querySelector(".btn-text");
+setTimeout(()=>{
 
-    const spinner =
-        btn.querySelector(".spinner");
-
-    const msg =
-        document.getElementById("msg");
-
-    const username =
-        document.getElementById("userInp").value.trim();
-
-    const password =
-        document.getElementById("passInp").value.trim();
-
-    btn.disabled = true;
-
-    spinner.style.display = "block";
-    btnText.style.display = "none";
-
-    if(users.length === 0){
-        await fetchUsers();
-    }
-
-    const found = users.find(u =>
-
-        String(
-            u.user || u.username || ""
-        ).trim().toLowerCase()
-
-        ===
-
-        username.toLowerCase()
-
-        &&
-
-        String(
-            u.pass || u.password || ""
-        ).trim()
-
-        === password
-
-    );
-
-    setTimeout(() => {
-
-        if(found){
-
-            localStorage.setItem(
-                "login",
-                "true"
-            );
-
-            localStorage.setItem(
-                "name",
-                found.name || ""
-            );
-
-            localStorage.setItem(
-                "username",
-                found.user ||
-                found.username ||
-                ""
-            );
-
-            msg.style.color = "#22c55e";
-            msg.innerText = "เข้าสู่ระบบสำเร็จ";
-
-            window.location.replace(
-                "main.html"
-            );
-
-        }else{
-
-            btn.disabled = false;
-
-            spinner.style.display =
-                "none";
-
-            btnText.style.display =
-                "block";
-
-            msg.style.color =
-                "#ef4444";
-
-            msg.innerText =
-                "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
-        }
-
-    },800);
+if(!users || users.length===0){
+    msg.style.color="#ef4444";
+    msg.innerText="❌ ไม่มีข้อมูลผู้ใช้";
+    btn.disabled=false;
+    spin.style.display="none";
+    txt.style.opacity="1";
+    return;
 }
 
+const found=users.find(x=>
+(String(x.user||x.username||"").toLowerCase()===u.toLowerCase())
+&&
+(String(x.pass||x.password||"")===p)
+);
+
+if(found){
+
+localStorage.setItem("login","true");
+localStorage.setItem("name",found.name||"");
+
+msg.style.color="#22c55e";
+msg.innerText="✅ เข้าสู่ระบบสำเร็จ";
+
+setTimeout(()=>{
+    window.location.replace("main.html");
+},600);
+
+}else{
+
+btn.disabled=false;
+spin.style.display="none";
+txt.style.opacity="1";
+
+msg.style.color="#ef4444";
+msg.innerText="❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+
+}
+
+},800);
+
+}
 </script>
 
 </body>

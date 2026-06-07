@@ -10,77 +10,92 @@
 
 <style>
 :root{
-    --bg:#f3f6fb;
+    --bg:#eef3fb;
     --card:#ffffff;
-    --shadow:0 10px 25px rgba(0,0,0,0.06);
-    --shadow-hover:0 18px 35px rgba(0,0,0,0.12);
-    --blue1:#0ea5e9;
-    --blue2:#1e40af;
+    --primary:#1e40af;
+    --primary2:#38bdf8;
+    --shadow:0 10px 25px rgba(0,0,0,0.08);
+    --shadow-hover:0 18px 40px rgba(0,0,0,0.15);
 }
 
 *{box-sizing:border-box}
+
 body{
     margin:0;
     font-family:'Kanit',sans-serif;
     background:var(--bg);
-    color:#1e293b;
 }
 
 /* HEADER */
 .header{
     background:linear-gradient(135deg,#0f172a,#1e40af,#38bdf8);
-    padding:50px 20px 70px;
+    padding:55px 20px 80px;
     border-bottom-left-radius:45px;
     border-bottom-right-radius:45px;
     color:white;
     position:relative;
+    overflow:hidden;
+}
+
+/* glow effect */
+.header::after{
+    content:"";
+    position:absolute;
+    width:300px;height:300px;
+    background:rgba(255,255,255,0.15);
+    top:-80px;right:-80px;
+    border-radius:50%;
+    filter:blur(30px);
 }
 
 .top{
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    position:relative;
+    z-index:2;
 }
 
 .icon-btn{
-    width:42px;height:42px;
+    width:44px;
+    height:44px;
     display:flex;
     align-items:center;
     justify-content:center;
     background:rgba(255,255,255,0.15);
     border-radius:14px;
-    backdrop-filter:blur(10px);
+    cursor:pointer;
+    transition:0.2s;
+}
+.icon-btn:hover{
+    transform:scale(1.05);
+    background:rgba(255,255,255,0.25);
 }
 
 .title{
     text-align:center;
     margin-top:10px;
+    position:relative;
+    z-index:2;
 }
+
 .title h1{
-    margin:0;
-    font-size:1.2rem;
-    font-weight:600;
-}
-.title p{
-    margin:5px 0;
-    opacity:0.8;
-    font-size:0.9rem;
+    margin:10px 0 0;
+    font-size:26px;
 }
 
 .user{
     display:inline-flex;
     align-items:center;
     gap:6px;
-    margin-top:10px;
-    background:rgba(255,255,255,0.15);
-    padding:5px 14px;
+    margin-top:12px;
+    background:rgba(255,255,255,0.18);
+    padding:6px 16px;
     border-radius:20px;
-    font-size:0.8rem;
 }
 
 /* MAIN */
 .main{
-    margin-top:-35px;
+    margin-top:-40px;
     padding:20px;
 }
 
@@ -93,66 +108,148 @@ body{
 /* CARD */
 .card{
     background:var(--card);
-    border-radius:28px;
-    padding:20px;
-    height:170px;
+    border-radius:22px;
+    padding:18px;
+    height:150px;
+    text-decoration:none;
+    box-shadow:var(--shadow);
     display:flex;
     flex-direction:column;
     justify-content:space-between;
-    text-decoration:none;
-    box-shadow:var(--shadow);
-    transition:0.3s;
+    transition:0.25s;
+    position:relative;
+    overflow:hidden;
 }
+
 .card:hover{
-    transform:translateY(-8px);
+    transform:translateY(-6px);
     box-shadow:var(--shadow-hover);
 }
 
-.icon{
-    width:50px;
-    height:50px;
-    border-radius:18px;
+/* icon circle */
+.card-icon{
+    width:48px;
+    height:48px;
+    border-radius:14px;
     display:flex;
     align-items:center;
     justify-content:center;
+    background:linear-gradient(135deg,#1e40af,#38bdf8);
+    color:white;
 }
 
-.blue{background:#dbeafe;color:#2563eb}
-.green{background:#dcfce7;color:#16a34a}
-.purple{background:#f3e8ff;color:#9333ea}
-
+/* card text */
 .card h3{
     margin:0;
-    font-size:0.95rem;
-    font-weight:500;
-    line-height:1.4;
+    font-size:16px;
+    color:#0f172a;
 }
 
-.badge{
-    opacity:0.5;
+.card p{
+    margin:0;
+    font-size:12px;
+    color:#64748b;
 }
 
-/* FOOTER */
-footer{
-    text-align:center;
-    font-size:0.75rem;
-    padding:25px;
-    color:#94a3b8;
+/* decorative bubble */
+.card::after{
+    content:"";
+    position:absolute;
+    width:120px;
+    height:120px;
+    background:rgba(56,189,248,0.15);
+    border-radius:50%;
+    bottom:-40px;
+    right:-40px;
 }
 
-/* responsive */
-@media(max-width:420px){
-    .grid{grid-template-columns:1fr}
+/* SIDEBAR */
+.overlay{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.4);
+    display:none;
+    z-index:9998;
 }
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:-280px;
+    width:260px;
+    height:100%;
+    background:#0f172a;
+    color:white;
+    padding:20px;
+    transition:0.3s;
+    z-index:9999;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.menu-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.menu-item:hover{
+    background:rgba(255,255,255,0.1);
+}
+
+.logout{color:#f87171;}
+
+.show{left:0 !important;}
+.show-overlay{display:block;}
+
 </style>
 </head>
 
 <body>
 
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+    <h3>เมนู</h3>
+
+    <div class="menu-item" onclick="goPage('input.html')">
+        <i data-lucide="droplets"></i> บันทึกค่าน้ำ
+    </div>
+
+    <div class="menu-item" onclick="goPage('history.html')">
+        <i data-lucide="bar-chart-3"></i> ประวัติ
+    </div>
+
+    <div class="menu-item" onclick="goPage('bill.html')">
+        <i data-lucide="file-text"></i> ใบเสร็จ
+    </div>
+
+    <hr style="opacity:0.2;width:100%">
+
+    <div class="menu-item logout" onclick="logout()">
+        <i data-lucide="log-out"></i> ออกจากระบบ
+    </div>
+</div>
+
+<!-- HEADER -->
 <div class="header">
+
     <div class="top">
-        <div class="icon-btn"><i data-lucide="menu"></i></div>
-        <div class="icon-btn"><i data-lucide="bell"></i></div>
+        <div class="icon-btn" onclick="openMenu()">
+            <i data-lucide="menu"></i>
+        </div>
+
+        <div class="icon-btn">
+            <i data-lucide="bell"></i>
+        </div>
     </div>
 
     <div class="title">
@@ -161,42 +258,69 @@ footer{
 
         <div class="user">
             <i data-lucide="user"></i>
-            <span id="user">โอม</span>
+            <span id="user">ผู้ใช้งาน</span>
         </div>
     </div>
+
 </div>
 
+<!-- MAIN -->
 <div class="main">
+
     <div class="grid">
 
         <a class="card" href="input.html">
-            <div class="icon blue"><i data-lucide="edit-3"></i></div>
-            <h3>บันทึกค่าน้ำ<br>ประจำเดือน</h3>
-            <div class="badge"><i data-lucide="droplets"></i></div>
+            <div class="card-icon"><i data-lucide="droplets"></i></div>
+            <div>
+                <h3>บันทึกค่าน้ำ</h3>
+                <p>กรอกเลขมิเตอร์ประจำเดือน</p>
+            </div>
         </a>
 
         <a class="card" href="history.html">
-            <div class="icon green"><i data-lucide="bar-chart-3"></i></div>
-            <h3>ประวัติการใช้งาน<br>และสถิติ</h3>
-            <div class="badge"><i data-lucide="pie-chart"></i></div>
+            <div class="card-icon"><i data-lucide="clock"></i></div>
+            <div>
+                <h3>ประวัติ</h3>
+                <p>ดูการใช้น้ำย้อนหลัง</p>
+            </div>
         </a>
 
         <a class="card" href="bill.html">
-            <div class="icon purple"><i data-lucide="file-text"></i></div>
-            <h3>สรุปบิล<br>และใบเสร็จ</h3>
-            <div class="badge"><i data-lucide="printer"></i></div>
+            <div class="card-icon"><i data-lucide="receipt"></i></div>
+            <div>
+                <h3>ใบเสร็จ</h3>
+                <p>ตรวจสอบบิลค่าน้ำ</p>
+            </div>
         </a>
 
     </div>
-</div>
 
-<footer>
-© 2026 ระบบบริหารจัดการประปาชุมชน<br>
-OHM of WaterSys
-</footer>
+</div>
 
 <script>
 lucide.createIcons();
+
+function openMenu(){
+    document.getElementById("sidebar").classList.add("show");
+    document.getElementById("overlay").classList.add("show-overlay");
+}
+
+function closeMenu(){
+    document.getElementById("sidebar").classList.remove("show");
+    document.getElementById("overlay").classList.remove("show-overlay");
+}
+
+function goPage(url){
+    window.location.href = url;
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.replace("index.html");
+}
+
+document.getElementById("user").innerText =
+    localStorage.getItem("name") || "ผู้ใช้งาน";
 </script>
 
 </body>
